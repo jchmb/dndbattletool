@@ -15,7 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.utils.CRUDCell;
-import nl.jchmb.dndbattle.utils.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 public class StatusCell extends CRUDCell<Status> {
 	private final boolean mainList;

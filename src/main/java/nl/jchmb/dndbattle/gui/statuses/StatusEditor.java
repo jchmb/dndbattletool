@@ -9,7 +9,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.jchmb.dndbattle.core.Status;
-import nl.jchmb.dndbattle.utils.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 public class StatusEditor extends PopOverForm {
 	private final Status status;

@@ -3,7 +3,7 @@ package nl.jchmb.dndbattle.gui.grid;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 import nl.jchmb.dndbattle.core.Battle;
-import nl.jchmb.dndbattle.utils.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 public class BattleGridOptions extends PopOverForm {
 	private Battle battle;

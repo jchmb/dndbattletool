@@ -8,7 +8,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.image.ImageView;
 import nl.jchmb.dndbattle.core.Tile;
 import nl.jchmb.dndbattle.utils.CRUDCell;
-import nl.jchmb.dndbattle.utils.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 public class TileCell extends CRUDCell<Tile> {
 

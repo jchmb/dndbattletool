@@ -9,7 +9,9 @@ import java.io.FileNotFoundException;
 
 import org.controlsfx.control.PopOver;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
@@ -27,12 +29,12 @@ import nl.jchmb.dndbattle.core.Battle;
  *
  */
 public class ActorCell extends ListCell<Actor> {
-	private final ActorList list;
-	private final ObjectProperty<Battle> battle;
+	private final Battle battle;
+	private final boolean hasMenu;
 	
-	public ActorCell(final ObjectProperty<Battle> battle, final ActorList list) {
+	public ActorCell(final Battle battle, final boolean hasMenu) {
 		this.battle = battle;
-		this.list = list;
+		this.hasMenu = hasMenu;
 	}
 	
 	/* (non-Javadoc)
@@ -50,7 +52,15 @@ public class ActorCell extends ListCell<Actor> {
 			graphicProperty().set(null);
 			setContextMenu(null);
 		} else {
-			textProperty().bind(actor.nameProperty());
+			textProperty().bind(
+				hasMenu ?
+					actor.nameProperty() :
+					Bindings.concat(
+						actor.nameProperty(),
+						"    ",
+						actor.positionProperty()
+					)
+			);
 			graphicProperty().bind(new ObjectBinding<ImageView>(){
 				{
 					super.bind(actor.avatarProperty());
@@ -79,7 +89,9 @@ public class ActorCell extends ListCell<Actor> {
 				}
 				
 			});
-			addContextMenu(actor);
+			if (hasMenu) {
+				addContextMenu(actor);
+			}
 		}
 	}
 	
@@ -87,8 +99,8 @@ public class ActorCell extends ListCell<Actor> {
 		MenuItem item = new MenuItem("Duplicate");
 		item.setOnAction(event -> {
 			Actor duplicateActor = actor.duplicate();
-			duplicateActor.setRandomPosition(battle.get());
-			battle.get().getActors().add(duplicateActor);
+			duplicateActor.setRandomPosition(battle);
+			battle.getActors().add(duplicateActor);
 		});
 		return item;
 	}
@@ -98,13 +110,13 @@ public class ActorCell extends ListCell<Actor> {
 		
 		MenuItem editItem = new MenuItem("Edit");
 		editItem.setOnAction(event -> {
-			ActorEditor editor = new ActorEditor(actor, battle.get());
+			ActorEditor editor = new ActorEditor(actor, battle);
 			editor.show(this);
 		});
 		
 		MenuItem deleteItem = new MenuItem("Delete");
 		deleteItem.setOnAction(event -> {
-			battle.get().actorsProperty().remove(actor);
+			battle.actorsProperty().remove(actor);
 		});
 		
 		contextMenu.getItems().addAll(

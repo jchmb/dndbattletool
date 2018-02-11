@@ -40,7 +40,7 @@ import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.gui.statuses.StatusComboBox;
 import nl.jchmb.dndbattle.gui.statuses.StatusList;
 import nl.jchmb.dndbattle.utils.BindingUtils;
-import nl.jchmb.dndbattle.utils.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 /**
  * @author jochem
@@ -143,6 +143,8 @@ public class ActorEditor extends PopOverForm {
 			addStatusField
 		);
 		
+//		ActorComboBox test = new ActorComboBox(battle);
+		
 		/* Character sheet */
 //		TextField sheetField = new TextField();
 //		bind(sheetField.textProperty(), actor.sheetProperty());
@@ -159,6 +161,7 @@ public class ActorEditor extends PopOverForm {
 		addField(avatarField, "Avatar");
 		addField(statusesContainer, "Statuses");
 //		addField(sheetField, "Sheet URL");
+//		addField(test, "Test");
 		
 		
 	}

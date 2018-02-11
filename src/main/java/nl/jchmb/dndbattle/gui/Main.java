@@ -17,6 +17,12 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.core.events.AttackDamageAction;
+import nl.jchmb.dndbattle.core.events.AttackMissedAction;
+import nl.jchmb.dndbattle.core.events.ComplexEvent;
+import nl.jchmb.dndbattle.core.events.MoveAction;
+import nl.jchmb.dndbattle.core.events.registry.BattleEventRegistry;
+import nl.jchmb.dndbattle.core.events.registry.NothingAction;
 import nl.jchmb.dndbattle.gui.actors.ActorList;
 import nl.jchmb.dndbattle.gui.grid.BattleGrid;
 import nl.jchmb.dndbattle.gui.info.InfoPane;
@@ -34,10 +40,13 @@ public class Main extends Application {
 	private static final String VERSION = "0.2.1 alpha";
 	
 	private final ObjectProperty<Battle> battle = new SimpleObjectProperty<>(new Battle());
+	private final BattleEventRegistry eventRegistry = new BattleEventRegistry();
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			/* Initialize stuff */
+			registerBattleEvents();
 			BorderPane root = new BorderPane();
 			buildGui(root);
 			Scene scene = new Scene(root);
@@ -80,6 +89,16 @@ public class Main extends Application {
 		root.setCenter(new BattleGrid(battle));
 		root.setRight(new LegendPane(battle));
 //		root.setBottom(new InfoPane(overviewPane.actorList.getSelectionModel().selectedItemProperty()));
+	}
+	
+	private void registerBattleEvents() {
+		eventRegistry
+			.register("move", MoveAction.class)
+			.register("attack_missed", AttackMissedAction.class)
+			.register("attack_damage", AttackDamageAction.class)
+			.register("complex", ComplexEvent.class)
+			.register("nothing", NothingAction.class)
+		;
 	}
 	
 	public static void main(String[] args) {

@@ -226,6 +226,9 @@ public class Actor {
 		this.genderProperty().set(gender);
 	}
 	
-	
+	@Override
+	public String toString() {
+		return getName();
+	}
 	
 }

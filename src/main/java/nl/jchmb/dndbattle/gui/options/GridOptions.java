@@ -4,7 +4,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Spinner;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.utils.BindingUtils;
-import nl.jchmb.dndbattle.utils.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 public class GridOptions extends PopOverForm {
 	private final Battle battle;

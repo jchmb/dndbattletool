@@ -19,6 +19,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 /**
  * @author jochem

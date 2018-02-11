@@ -21,7 +21,7 @@ import nl.jchmb.dndbattle.core.Avatar;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.gui.options.GridOptions;
-import nl.jchmb.dndbattle.utils.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 /**
  * @author jochem

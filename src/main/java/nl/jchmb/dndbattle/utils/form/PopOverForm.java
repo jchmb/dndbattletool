@@ -1,4 +1,4 @@
-package nl.jchmb.dndbattle.utils;
+package nl.jchmb.dndbattle.utils.form;
 
 import java.util.ArrayList;
 import java.util.List;
