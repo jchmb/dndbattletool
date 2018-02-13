@@ -12,10 +12,19 @@ public class StatusComboBox extends ComboBox<Status> {
 			return new StatusCell(
 				statuses,
 				Status::nameProperty,
+				false,
 				false
 			);
 		});
 		
 		itemsProperty().bind(statuses);
+		buttonCellProperty().set(
+			new StatusCell(
+				statuses,
+				Status::nameProperty,
+				false,
+				false
+			)
+		);
 	}
 }

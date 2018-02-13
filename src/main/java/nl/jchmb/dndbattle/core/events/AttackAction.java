@@ -17,7 +17,7 @@ public abstract class AttackAction extends BattleAction {
 			getSubject().getPosition().toString(),
 			getSubject().getName(),
 			getTarget().getName(),
-			getSubject().getGender().getPosessivePronoun(),
+			getSubject().getGender().getPossessivePronoun(),
 			getWeapon(),
 			getResultText()
 		);

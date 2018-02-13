@@ -55,6 +55,13 @@ public class BattleGrid extends Pane {
 			}
 		});
 		
+		this.prefWidthProperty().bind(
+			BindingUtils.binding(
+				this.gridSize,
+				gs -> gs.getX()
+			)
+		);
+		
 		rebuildBackground();
 		getChildren().addAll(
 			backgroundLayer,

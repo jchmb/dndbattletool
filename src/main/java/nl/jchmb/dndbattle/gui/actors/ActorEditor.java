@@ -146,8 +146,8 @@ public class ActorEditor extends PopOverForm {
 //		ActorComboBox test = new ActorComboBox(battle);
 		
 		/* Character sheet */
-//		TextField sheetField = new TextField();
-//		bind(sheetField.textProperty(), actor.sheetProperty());
+		TextField sheetField = new TextField();
+		bind(sheetField.textProperty(), actor.sheetProperty());
 		
 		statusesField.itemsProperty().bind(actor.statusesProperty());
 		
@@ -160,7 +160,7 @@ public class ActorEditor extends PopOverForm {
 		addField(heightField, "Height");
 		addField(avatarField, "Avatar");
 		addField(statusesContainer, "Statuses");
-//		addField(sheetField, "Sheet URL");
+		addField(sheetField, "Sheet URL");
 //		addField(test, "Test");
 		
 		

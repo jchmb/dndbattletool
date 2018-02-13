@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener.Change;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
 
-public class LegendPane extends VBox {
+public class LegendPane extends GridPane {
 	private ObjectProperty<Battle> battle;
 	private List<? extends Actor> mirrorList;
 	private final ChangeListener<Number> initiativeListener =
@@ -24,8 +26,16 @@ public class LegendPane extends VBox {
 		super();
 		
 		this.battle = battle;
-		this.setPrefWidth(250.0f);
+//		this.prefWidthProperty().bind(
+//			Bindings.multiply(
+//				250,
+//				battle.get().legendColumnsProperty()
+//			)
+//		);
 		battle.get().actorsProperty().addListener(this::onChanged);
+		battle.get().legendColumnsProperty().addListener(event -> {
+			rebuild(battle.get().actorsProperty());
+		});
 	}
 	
 	private void onChanged(Change<? extends Actor> change) {
@@ -43,10 +53,16 @@ public class LegendPane extends VBox {
 				.reversed()
 		);
 		int index = 0;
+		int column = 0;
 		for (Actor actor : mirrorList) {
 			actor.initiativeProperty().removeListener(initiativeListener);
 			actor.initiativeProperty().addListener(initiativeListener);
-			getChildren().add(buildEntry(actor, index++));
+			add(buildEntry(actor, index), column, index);
+			index++;
+			if (index >= battle.get().getGridSize().getY()) {
+				column++;
+				index = 0;
+			}
 		}
 	}
 	

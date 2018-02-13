@@ -17,8 +17,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import nl.jchmb.dndbattle.core.genders.Gender;
-import nl.jchmb.dndbattle.core.genders.Undetermined;
 
 /**
  * @author jochem
@@ -37,7 +35,7 @@ public class Actor {
 	private final ListProperty<Status> statuses = new SimpleListProperty<>(
 		FXCollections.observableArrayList()
 	);
-	private final ObjectProperty<Gender> gender = new SimpleObjectProperty<>(new Undetermined());
+	private final ObjectProperty<Gender> gender = new SimpleObjectProperty<>(Gender.OTHER);
 	
 	public Actor() {
 		setAvatar(new File("res/unknown.jpg"));

@@ -49,6 +49,7 @@ import nl.jchmb.dndbattle.utils.Images;
 
 public class LegendEntry extends Pane {
 	private final int HEALTH_BAR_WIDTH = 100, HEALTH_BAR_HEIGHT = 6;
+	public final int ENTRY_WIDTH = 250; 
 	private final Battle battle;
 	private final Actor actor;
 	private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
@@ -69,6 +70,7 @@ public class LegendEntry extends Pane {
 		this.actor = actor;
 		this.index = index;
 		this.minHeightProperty().bind(battle.cellSizeProperty());
+		this.prefWidthProperty().set(ENTRY_WIDTH);
 		final IntegerProperty cellSizeProperty = battle.cellSizeProperty();
 		final ObjectProperty<File> urlProperty = actor.avatarProperty();
 		this.image.bind(new ObjectBinding<Image>(){

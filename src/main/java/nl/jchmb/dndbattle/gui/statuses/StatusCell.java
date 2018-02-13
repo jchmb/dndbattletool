@@ -18,15 +18,18 @@ import nl.jchmb.dndbattle.utils.CRUDCell;
 import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 public class StatusCell extends CRUDCell<Status> {
-	private final boolean mainList;
+	private final boolean editable;
+	private final boolean deletable;
 
 	public StatusCell(
 			ListProperty<Status> list,
 			Function<Status, StringProperty> namePropertyFn,
-			boolean mainList
+			boolean editable,
+			boolean deletable
 	) {
 		super(list, namePropertyFn);
-		this.mainList = mainList;
+		this.editable = editable;
+		this.deletable = deletable;
 	}
 
 	@Override
@@ -62,9 +65,9 @@ public class StatusCell extends CRUDCell<Status> {
 	
 	@Override
 	protected void buildContextMenu(ContextMenu contextMenu, Status item) {
-		if (mainList) {
+		if (editable) {
 			super.buildContextMenu(contextMenu, item);
-		} else {
+		} else if (deletable) {
 			contextMenu.getItems().addAll(
 				getDeleteItem(item)
 			);

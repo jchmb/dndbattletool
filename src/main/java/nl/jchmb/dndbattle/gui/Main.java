@@ -37,7 +37,7 @@ import nl.jchmb.dndbattle.utils.BindingUtils;
  *
  */
 public class Main extends Application {
-	private static final String VERSION = "0.2.1 alpha";
+	private static final String VERSION = "0.3";
 	
 	private final ObjectProperty<Battle> battle = new SimpleObjectProperty<>(new Battle());
 	private final BattleEventRegistry eventRegistry = new BattleEventRegistry();

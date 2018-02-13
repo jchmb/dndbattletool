@@ -31,10 +31,14 @@ public class GridOptions extends PopOverForm {
 		ColorPicker gridColorField = new ColorPicker();
 		bind(gridColorField.valueProperty(), battle.borderColorProperty());
 		
-		addField(sizeXField, "Grid width");
-		addField(sizeYField, "Grid height");
-		addField(cellSizeField, "Cell size");
-		addField(backgroundColorField, "Background color");
-		addField(gridColorField, "Grid color");
+		Spinner<Integer> legendColumnsField = new Spinner<Integer>(1, 3, 1);
+		bind(legendColumnsField.getValueFactory().valueProperty(), battle.legendColumnsProperty().asObject());
+		
+		addField(sizeXField, "Grid width"); // TODO: e/i
+		addField(sizeYField, "Grid height"); // TODO: e/i
+		addField(cellSizeField, "Cell size"); // TODO: e/i
+		addField(backgroundColorField, "Background color"); // TODO: e/i
+		addField(gridColorField, "Grid color"); // TODO: e/i
+		addField(legendColumnsField, "Legend columns"); // TODO: export/import
 	}
 }

@@ -34,6 +34,7 @@ public class Battle {
 	);
 	private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<>(Color.WHITE);
 	private final ObjectProperty<Color> borderColor = new SimpleObjectProperty<>(Color.GRAY);
+	private final IntegerProperty legendColumns = new SimpleIntegerProperty(1);
 	
 	public Battle() {
 		
@@ -161,6 +162,21 @@ public class Battle {
 	public final void setBorderColor(final Color borderColor) {
 		this.borderColorProperty().set(borderColor);
 	}
+
+	public final IntegerProperty legendColumnsProperty() {
+		return this.legendColumns;
+	}
+	
+
+	public final int getLegendColumns() {
+		return this.legendColumnsProperty().get();
+	}
+	
+
+	public final void setLegendColumns(final int legendColumns) {
+		this.legendColumnsProperty().set(legendColumns);
+	}
+	
 	
 	
 	
