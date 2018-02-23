@@ -12,9 +12,7 @@ public class MythWeaversAdapter extends HttpAdapter {
 	
 	public static void main(String[] args) {
 		HttpAdapter adapter = new MythWeaversAdapter();
-		CharacterSheet sheet = adapter.getCharacterSheet(
-			"https://www.myth-weavers.com/sheet.html#id=1434493"
-		);
+		CharacterSheet sheet = adapter.getCharacterSheet(args[0]);
 		
 		System.out.println(String.format(
 			"AC: %s; Flat: %s; Touch: %s",

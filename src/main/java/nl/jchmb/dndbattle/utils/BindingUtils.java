@@ -4,8 +4,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WeakChangeListener;
 import javafx.scene.control.Spinner;
 import nl.jchmb.dndbattle.core.Vector2;
@@ -53,5 +55,21 @@ public class BindingUtils {
 				(prop, oldValue, newValue) -> property.set(new Vector2(property.get().getX(), newValue))
 			)
 		);
+	}
+	
+	public static <T> StringBinding bindWithDefault(final ObservableValue<T> obj, final String defaultValue) {
+		return new StringBinding() {
+			{
+				super.bind(obj);
+			}
+			
+			@Override
+			protected String computeValue() {
+				return obj.getValue() == null ?
+					obj.toString() :
+					defaultValue;
+			}
+			
+		};
 	}
 }

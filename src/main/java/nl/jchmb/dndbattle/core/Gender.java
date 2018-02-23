@@ -5,13 +5,13 @@ import javafx.beans.property.StringProperty;
 
 public class Gender {
 	public static final Gender MALE = new Gender(
-		"M",
+		"Male",
 		"he",
 		"his",
 		"him"
 	);
 	public static final Gender FEMALE = new Gender(
-		"F",
+		"Female",
 		"she",
 		"her",
 		"her"
@@ -31,7 +31,7 @@ public class Gender {
 		
 	}
 	
-	private final StringProperty symbol = new SimpleStringProperty("O");
+	private final StringProperty symbol = new SimpleStringProperty("Undetermined");
 	private final StringProperty subjectPronoun = new SimpleStringProperty("they");
 	private final StringProperty possessivePronoun = new SimpleStringProperty("their");
 	private final StringProperty objectPronoun = new SimpleStringProperty("them");

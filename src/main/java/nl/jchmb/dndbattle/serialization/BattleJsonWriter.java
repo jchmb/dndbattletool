@@ -29,6 +29,7 @@ public class BattleJsonWriter {
 		}
 		root.put("actors", actorArray); // TODO fix warning
 		root.put("statuses", statusArray);
+		root.put("options", serializeOptionsObject(battle));
 
 		FileWriter stream;
 		try {
@@ -41,6 +42,18 @@ public class BattleJsonWriter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private JSONObject serializeOptionsObject(final Battle battle) {
+		JSONObject o = new JSONObject();
+		
+		o.put("grid_size", serializeVector2(battle.getGridSize()));
+		o.put("cell_size", battle.getCellSize());
+		o.put("background_color", serializeColor(battle.getBackgroundColor()));
+		o.put("border_color", serializeColor(battle.getBorderColor()));
+		
+		return o;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -22,15 +22,32 @@ public class BattleJsonReader {
 		try {
 			JSONObject data = (JSONObject) parser.parse(new FileReader(file));
 			JSONArray actorArray = (JSONArray) data.get("actors");
-			JSONArray statusArray = (JSONArray) data.get("statuses");	
+			JSONArray statusArray = (JSONArray) data.get("statuses");
+			JSONObject optionsObject = (JSONObject) data.get("options");
 			for (Object o : statusArray) {
 				readStatus(battle, (JSONObject) o);
 			}
 			for (Object o : actorArray) {
 				readActor(battle, (JSONObject) o);
 			}
+			readOptions(battle, optionsObject);
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void readOptions(final Battle battle, final JSONObject o) {
+		if (o.containsKey("cell_size")) {
+			battle.setCellSize(toInt(o, "cell_size"));
+		}
+		if (o.containsKey("grid_size")) {
+			battle.setGridSize(readVector2((JSONObject) o.get("grid_size")));
+		}
+		if (o.containsKey("background_color")) {
+			battle.setBackgroundColor(readColor((JSONObject) o.get("background_color")));
+		}
+		if (o.containsKey("border_color")) {
+			battle.setBorderColor(readColor((JSONObject) o.get("border_color")));
 		}
 	}
 	

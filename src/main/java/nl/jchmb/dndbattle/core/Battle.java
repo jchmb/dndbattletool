@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
  */
 public class Battle {
 	private final ObjectProperty<File> file = new SimpleObjectProperty<>();
+	private final ObjectProperty<File> backgroundImageFile = new SimpleObjectProperty<>();
 	private final IntegerProperty cellSize = new SimpleIntegerProperty(50);
 	private final ObjectProperty<Vector2> gridSize = new SimpleObjectProperty<>(new Vector2(17, 17));
 	private final ListProperty<Actor> actors = new SimpleListProperty<>(
@@ -79,6 +80,9 @@ public class Battle {
 	public void reset() {
 		setGridSize(new Vector2(17, 17));
 		setCellSize(50);
+		setBackgroundColor(Color.WHITE);
+		setBorderColor(Color.GRAY);
+		setBackgroundImageFile(null);
 		getActors().clear();
 		getStatuses().clear();
 	}
@@ -176,6 +180,21 @@ public class Battle {
 	public final void setLegendColumns(final int legendColumns) {
 		this.legendColumnsProperty().set(legendColumns);
 	}
+
+	public final ObjectProperty<File> backgroundImageFileProperty() {
+		return this.backgroundImageFile;
+	}
+	
+
+	public final File getBackgroundImageFile() {
+		return this.backgroundImageFileProperty().get();
+	}
+	
+
+	public final void setBackgroundImageFile(final File backgroundImageFile) {
+		this.backgroundImageFileProperty().set(backgroundImageFile);
+	}
+	
 	
 	
 	
