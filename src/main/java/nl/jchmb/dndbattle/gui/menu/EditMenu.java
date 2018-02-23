@@ -16,11 +16,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Avatar;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.gui.options.GridOptions;
+import nl.jchmb.dndbattle.gui.options.StatusOptions;
+import nl.jchmb.dndbattle.gui.statuses.StatusList;
+import nl.jchmb.dndbattle.utils.Popups;
 import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 /**
@@ -30,12 +34,13 @@ import nl.jchmb.dndbattle.utils.form.PopOverForm;
 public class EditMenu extends Menu {
 	private final ObjectProperty<Battle> battle;
 	
-	public EditMenu(final ObjectProperty<Battle> battle, BorderPane pane) {
+	public EditMenu(final ObjectProperty<Battle> battle, BorderPane pane, Stage window) {
 		super("Edit");
 		this.battle = battle;
 		
 		getItems().addAll(
 			getGridOptionsItem(pane),
+//			getEditStatusesItem(pane, window),
 			getAddActorItem(),
 			getAddStatusItem(),
 			getAddTilesetItem()
@@ -47,6 +52,14 @@ public class EditMenu extends Menu {
 		item.setOnAction(event -> {
 			GridOptions gridOptions = new GridOptions(battle.get());
 			gridOptions.show(pane.getCenter());
+		});
+		return item;
+	}
+	
+	private final MenuItem getEditStatusesItem(BorderPane pane, Stage window) {
+		MenuItem item = new MenuItem("Edit statuses");
+		item.setOnAction(event -> {
+			Popups.show(new StatusOptions(battle.get()), window);
 		});
 		return item;
 	}

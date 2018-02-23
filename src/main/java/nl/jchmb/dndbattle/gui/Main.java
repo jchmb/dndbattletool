@@ -48,7 +48,7 @@ public class Main extends Application {
 			/* Initialize stuff */
 			registerBattleEvents();
 			BorderPane root = new BorderPane();
-			buildGui(root);
+			buildGui(root, primaryStage);
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(
 				getClass().getResource("style.css").toExternalForm()
@@ -72,19 +72,19 @@ public class Main extends Application {
 		}
 	}
 	
-	private MenuBar getMenuBar(BorderPane root) {
+	private MenuBar getMenuBar(BorderPane root, final Stage window) {
 		MenuBar menuBar = new MenuBar();
 		menuBar.getMenus().addAll(
 			new FileMenu(battle, root),
-			new EditMenu(battle, root),
+			new EditMenu(battle, root, window),
 			new UploadMenu(root)
 		);
 		return menuBar;
 	}
 	
-	private void buildGui(BorderPane root) {
+	private void buildGui(BorderPane root, final Stage window) {
 		OverviewPane overviewPane = new OverviewPane(battle);
-		root.setTop(getMenuBar(root));
+		root.setTop(getMenuBar(root, window));
 		root.setLeft(overviewPane);
 		root.setCenter(new BattleGrid(battle));
 		root.setRight(new LegendPane(battle));
