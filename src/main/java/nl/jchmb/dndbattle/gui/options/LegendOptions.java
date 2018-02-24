@@ -1,4 +1,4 @@
-package nl.jchmb.dndbattle.gui.legend;
+package nl.jchmb.dndbattle.gui.options;
 
 import javafx.scene.control.ColorPicker;
 import nl.jchmb.dndbattle.core.Battle;

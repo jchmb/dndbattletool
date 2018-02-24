@@ -46,8 +46,17 @@ public class BattleJsonReader {
 		if (o.containsKey("background_color")) {
 			battle.setBackgroundColor(readColor((JSONObject) o.get("background_color")));
 		}
+		if (o.containsKey("background_image")) {
+			battle.setBackgroundImageFile(new File((String) o.get("background_image")));
+		}
 		if (o.containsKey("border_color")) {
 			battle.setBorderColor(readColor((JSONObject) o.get("border_color")));
+		}
+		if (o.containsKey("legend_entry_even_color")) {
+			battle.setLegendEntryEvenColor(readColor((JSONObject) o.get("legend_entry_even_color")));
+		}
+		if (o.containsKey("legend_entry_odd_color")) {
+			battle.setLegendEntryOddColor(readColor((JSONObject) o.get("legend_entry_odd_color")));
 		}
 	}
 	

@@ -52,34 +52,35 @@ public class GridOptions extends Form {
 			"Grid color"
 		);
 		
-//		HBox backgroundImageField = new HBox();
-//		Button selectImageButton = new Button();
-//		selectImageButton.setText(
-//			battle.getBackgroundImageFile() == null ?
-//				"(no background image)" :
-//				battle.getBackgroundImageFile().getAbsolutePath()
-//		);
-//		selectImageButton.setOnAction(event -> {
-//			FileChooser chooser = new FileChooser();
-//			chooser.setTitle("Select background image");
-//			chooser.getExtensionFilters().add(
-//				new ExtensionFilter("Image files", "*.jpg", ".png")
-//			);
-//			File file = chooser.showOpenDialog(null);
-//			if (file != null) {
-//				battle.setBackgroundImageFile(file);
-//				selectImageButton.setText(
-//					battle.getBackgroundImageFile().getAbsolutePath()
-//				);
-//			}
-//		});
-//		Button deleteImageButton = new Button("[X]");
-//		deleteImageButton.setOnAction(event -> {
-//			selectImageButton.setText("(no background image)");
-//		});
-//		backgroundImageField.getChildren().addAll(
-//			selectImageButton,
-//			deleteImageButton
-//		);
+		HBox backgroundImageField = new HBox();
+		Button selectImageButton = new Button();
+		selectImageButton.setText(
+			battle.getBackgroundImageFile() == null ?
+				"(no background image)" :
+				battle.getBackgroundImageFile().getAbsolutePath()
+		);
+		selectImageButton.setOnAction(event -> {
+			FileChooser chooser = new FileChooser();
+			chooser.setTitle("Select background image");
+			chooser.getExtensionFilters().add(
+				new ExtensionFilter("Image files", "*.jpg", ".png")
+			);
+			File file = chooser.showOpenDialog(null);
+			if (file != null) {
+				battle.setBackgroundImageFile(file);
+				selectImageButton.setText(
+					battle.getBackgroundImageFile().getAbsolutePath()
+				);
+			}
+		});
+		Button deleteImageButton = new Button("[X]");
+		deleteImageButton.setOnAction(event -> {
+			selectImageButton.setText("(no background image)");
+		});
+		backgroundImageField.getChildren().addAll(
+			selectImageButton,
+			deleteImageButton
+		);
+		addField(backgroundImageField, "Background image");
 	}
 }

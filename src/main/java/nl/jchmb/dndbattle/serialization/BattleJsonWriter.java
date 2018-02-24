@@ -51,7 +51,10 @@ public class BattleJsonWriter {
 		o.put("grid_size", serializeVector2(battle.getGridSize()));
 		o.put("cell_size", battle.getCellSize());
 		o.put("background_color", serializeColor(battle.getBackgroundColor()));
+		o.put("background_image", battle.getBackgroundImageFile().getAbsolutePath());
 		o.put("border_color", serializeColor(battle.getBorderColor()));
+		o.put("legend_entry_even_color", serializeColor(battle.getLegendEntryEvenColor()));
+		o.put("legend_entry_odd_color", serializeColor(battle.getLegendEntryOddColor()));
 		
 		return o;
 	}

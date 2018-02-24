@@ -21,8 +21,8 @@ import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Avatar;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Status;
-import nl.jchmb.dndbattle.gui.legend.LegendOptions;
 import nl.jchmb.dndbattle.gui.options.GridOptions;
+import nl.jchmb.dndbattle.gui.options.LegendOptions;
 import nl.jchmb.dndbattle.gui.options.StatusOptions;
 import nl.jchmb.dndbattle.gui.statuses.StatusList;
 import nl.jchmb.dndbattle.utils.Popups;
@@ -42,9 +42,8 @@ public class EditMenu extends Menu {
 		getItems().addAll(
 			getGridOptionsItem(pane, window),
 			getLegendOptionsItem(pane, window),
-//			getEditStatusesItem(pane, window),
+			getEditStatusesItem(pane, window),
 			getAddActorItem(),
-			getAddStatusItem(),
 			getAddTilesetItem()
 		);
 	}

@@ -5,9 +5,15 @@
  * For more details take a look at the Java Libraries chapter in the Gradle
  * user guide available at https://docs.gradle.org/4.3/userguide/java_library_plugin.html
  */
+ 
+plugins {
+  id "com.github.onslip.gradle-one-jar" version "1.0.5"
+  id "application"
+}
 
 // Apply the java-library plugin to add support for Java Library
-apply plugin: 'java-library'
+//apply plugin: 'java'
+
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -17,9 +23,6 @@ repositories {
 }
 
 dependencies {
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api 'org.apache.commons:commons-math3:3.6.1'
-
 	// https://mvnrepository.com/artifact/com.machinepublishers/jbrowserdriver
 	compile group: 'com.machinepublishers', name: 'jbrowserdriver', version: '1.0.0-RC1'
 	
@@ -38,6 +41,12 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+}
+
+task createJar(type: OneJar) {
+    mainClass = 'nl.jchmb.dndbattle.gui.Main'
+
+
 }
 
 /*

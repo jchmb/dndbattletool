@@ -1,7 +1,5 @@
 package nl.jchmb.dndbattle.gui.grid;
 
-import java.awt.event.MouseEvent;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
@@ -13,12 +11,10 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -31,19 +27,19 @@ import nl.jchmb.dndbattle.utils.BindingUtils;
 import nl.jchmb.dndbattle.utils.Images;
 
 public class BattleGrid extends Pane {
-	private final ObjectProperty<Battle> battle;
+	private final Battle battle;
 	private final ObjectProperty<Vector2> gridSize = new SimpleObjectProperty<Vector2>();
 	private final Canvas backgroundLayer = new Canvas();
 	private final Group actorLayer = new Group();
 	private Node selectedAvatar = null;
 	private Vector2 originalMousePosition = new Vector2(0, 0);
+	private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
 	
-	
-	public BattleGrid(final ObjectProperty<Battle> battle) {
+	public BattleGrid(final Battle battle) {
 		this.battle = battle;
 		
-		final ObjectProperty<Vector2> gridSize = battle.get().gridSizeProperty();
-		final ObjectProperty<Integer> cellSize = battle.get().cellSizeProperty().asObject();
+		final ObjectProperty<Vector2> gridSize = battle.gridSizeProperty();
+		final ObjectProperty<Integer> cellSize = battle.cellSizeProperty().asObject();
 		this.gridSize.bind(new ObjectBinding<Vector2>(){
 			{
 				super.bind(gridSize, cellSize);
@@ -68,10 +64,14 @@ public class BattleGrid extends Pane {
 			actorLayer
 		);
 		
-		battle.get().actorsProperty().addListener(this::onActorsListChanged);
+		battle.actorsProperty().addListener(this::onActorsListChanged);
 		
-		battle.get().backgroundColorProperty().addListener(this::onGridColorChanged);
-		battle.get().borderColorProperty().addListener(this::onGridColorChanged);
+		battle.backgroundColorProperty().addListener(this::onGridColorChanged);
+		battle.borderColorProperty().addListener(this::onGridColorChanged);
+		
+		battle.backgroundImageFileProperty().addListener(
+			(prop, oldValue, newValue) -> rebuildBackground()
+		);
 		
 		this.gridSize.addListener(this::onGridSizeChanged);
 	}
@@ -87,14 +87,23 @@ public class BattleGrid extends Pane {
 	
 	private void rebuildBackground() {
 		final Vector2 gridSize = this.gridSize.get();
-		final int cellSize = battle.get().getCellSize();
+		final int cellSize = battle.getCellSize();
 		backgroundLayer.setWidth(gridSize.getX());
 		backgroundLayer.setHeight(gridSize.getY());
 		GraphicsContext g = backgroundLayer.getGraphicsContext2D();
 		g.clearRect(0, 0, gridSize.getX(), gridSize.getY());
-		g.setFill(battle.get().getBackgroundColor());
+		g.setFill(battle.getBackgroundColor());
+		
 		g.fillRect(0, 0, gridSize.getX(), gridSize.getY());
-		g.setStroke(battle.get().getBorderColor());
+		
+		if (battle.getBackgroundImageFile() == null) {
+			image.set(null);
+		} else {
+			image.set(Images.load(battle.getBackgroundImageFile()).get());
+			g.drawImage(image.get(), 0, 0);
+		}
+		
+		g.setStroke(battle.getBorderColor());
 		g.setFont(Font.font("Verdana", FontWeight.NORMAL, 8.0f));
 		int i = 0;
 		for (int x = 0; x < gridSize.getX() + cellSize; x += cellSize) {
@@ -118,14 +127,14 @@ public class BattleGrid extends Pane {
 	
 	private void rebuildActors() {
 		actorLayer.getChildren().clear();
-		battle.get().actorsProperty().forEach(actor -> actorLayer.getChildren().add(buildActor(actor)));
+		battle.actorsProperty().forEach(actor -> actorLayer.getChildren().add(buildActor(actor)));
 		// TODO: clean old
 	}
 	
 	private Node buildActor(Actor actor) {
 		ImageView imageView = new ImageView();
 		BorderPane view = new BorderPane(imageView);
-		IntegerProperty cellSizeProperty = battle.get().cellSizeProperty();
+		IntegerProperty cellSizeProperty = battle.cellSizeProperty();
 		imageView.imageProperty().bind(
 //			BindingUtils.binding(
 //				actor.avatarProperty(),
@@ -154,14 +163,14 @@ public class BattleGrid extends Pane {
 		view.translateXProperty().bind(
 			BindingUtils.binding(
 				actor.positionProperty(),
-				battle.get().cellSizeProperty().asObject(),
+				battle.cellSizeProperty().asObject(),
 				(position, cellSize) -> position.getX() * cellSize
 			)
 		);
 		view.translateYProperty().bind(
 			BindingUtils.binding(
 				actor.positionProperty(),
-				battle.get().cellSizeProperty().asObject(),
+				battle.cellSizeProperty().asObject(),
 				(position, cellSize) -> position.getY() * cellSize
 			)
 		);
@@ -170,7 +179,7 @@ public class BattleGrid extends Pane {
 				selectedAvatar = view;
 				originalMousePosition = new Vector2((int) event.getScreenX(), (int) event.getScreenY());
 			} else if (event.getButton().equals(MouseButton.SECONDARY)) {
-				ActorEditor actorEditor = new ActorEditor(actor, battle.get());
+				ActorEditor actorEditor = new ActorEditor(actor, battle);
 				actorEditor.show(view);
 			}
 		});
