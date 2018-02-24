@@ -185,7 +185,7 @@ public class LegendEntry extends Pane {
 		this.setBackground(
 			new Background(
 				new BackgroundFill(
-					index % 2 == 0 ? Color.WHITE : new Color(0.95f, 0.95f, 0.95f, 1.0f),
+					index % 2 == 0 ? battle.getLegendEntryEvenColor() : battle.getLegendEntryOddColor(),
 					null,
 					null
 				)

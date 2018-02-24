@@ -1,18 +1,23 @@
 package nl.jchmb.dndbattle.utils.form;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import javafx.beans.WeakListener;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.WeakChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import nl.jchmb.dndbattle.core.Vector2;
@@ -21,10 +26,9 @@ import nl.jchmb.dndbattle.utils.BindingUtils;
 public class Form extends GridPane {
 	private int rowIndex = 0;
 	private final List<Property<?>> properties = new ArrayList<>();
-	private final List<WeakListener> weakListeners;
+	private final List<WeakListener> weakListeners = new ArrayList<>();
 	
 	public Form() {
-		weakListeners = new ArrayList<>();
 		setPadding(new Insets(10, 10, 10, 10));
 	}
 	
@@ -71,19 +75,67 @@ public class Form extends GridPane {
 			final String labelY
 	) {
 		spinnerX.getValueFactory().setValue(property.get().getX());
-		final WeakChangeListener<Integer> listenerX = new WeakChangeListener<Integer>(
-			(prop, oldValue, newValue) -> property.set(new Vector2(newValue, property.get().getY()))
-		);
-		spinnerX.valueProperty().addListener(listenerX);
-		
 		spinnerY.getValueFactory().setValue(property.get().getY());
-		final WeakChangeListener<Integer> listenerY = new WeakChangeListener<Integer>(
-			(prop, oldValue, newValue) -> property.set(new Vector2(newValue, property.get().getY()))
+		property.bind(
+			new ObjectBinding<>() {
+				{
+					super.bind(
+						spinnerX.valueProperty(),
+						spinnerY.valueProperty()
+					);
+				}
+
+				@Override
+				protected Vector2 computeValue() {
+					return new Vector2(
+						spinnerX.getValue(),
+						spinnerY.getValue()
+					);
+				}
+			}
 		);
-		spinnerY.valueProperty().addListener(listenerY);
-		weakListeners.add(listenerX);
-		weakListeners.add(listenerY);
 		addField(spinnerX, labelX);
 		addField(spinnerY, labelY);
+	}
+	
+	protected void addIntegerField(
+		final IntegerProperty property,
+		final Spinner<Integer> spinner,
+		final String label
+	) {
+		bindStrongly(property.asObject(), spinner.getValueFactory().valueProperty());
+		addField(spinner, label);
+	}
+	
+	protected void addStringField(
+		final StringProperty property,
+		final TextField field,
+		final String label
+	) {
+		bindStrongly(property, field.textProperty());
+		addField(field, label);
+	}
+	
+	protected void addColorField(
+		final ObjectProperty<Color> property,
+		final ColorPicker colorField,
+		final String label
+	) {
+//		bindWeakly(property, colorField.valueProperty());
+//		property.bind(colorField.valueProperty());
+		bindStrongly(property, colorField.valueProperty());
+		addField(colorField, label);
+	}
+	
+	protected final <T> void bindStrongly(final Property<T> modelProperty, final Property<T> fieldProperty) {
+		fieldProperty.setValue(modelProperty.getValue());
+		modelProperty.bind(fieldProperty);
+	}
+	
+	protected final <T> void bindWeakly(final Property<T> modelProperty, final Property<T> fieldProperty) {
+		final WeakChangeListener<T> listener = BindingUtils.weakChangeSetter(modelProperty);
+		fieldProperty.setValue(modelProperty.getValue());
+		fieldProperty.addListener(listener);
+		weakListeners.add(listener);
 	}
 }

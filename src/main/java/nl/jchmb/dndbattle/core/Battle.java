@@ -36,6 +36,8 @@ public class Battle {
 	private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<>(Color.WHITE);
 	private final ObjectProperty<Color> borderColor = new SimpleObjectProperty<>(Color.GRAY);
 	private final IntegerProperty legendColumns = new SimpleIntegerProperty(1);
+	private final ObjectProperty<Color> legendEntryEvenColor = new SimpleObjectProperty(Color.WHITE);
+	private final ObjectProperty<Color> legendEntryOddColor = new SimpleObjectProperty(Color.LIGHTGRAY);
 	
 	public Battle() {
 		
@@ -82,6 +84,8 @@ public class Battle {
 		setCellSize(50);
 		setBackgroundColor(Color.WHITE);
 		setBorderColor(Color.GRAY);
+		setLegendEntryEvenColor(Color.WHITE);
+		setLegendEntryOddColor(new Color(0.95f, 0.95f, 0.95f, 1.0f));
 		setBackgroundImageFile(null);
 		getActors().clear();
 		getStatuses().clear();
@@ -194,6 +198,36 @@ public class Battle {
 	public final void setBackgroundImageFile(final File backgroundImageFile) {
 		this.backgroundImageFileProperty().set(backgroundImageFile);
 	}
+
+	public final ObjectProperty<Color> legendEntryEvenColorProperty() {
+		return this.legendEntryEvenColor;
+	}
+	
+
+	public final Color getLegendEntryEvenColor() {
+		return this.legendEntryEvenColorProperty().get();
+	}
+	
+
+	public final void setLegendEntryEvenColor(final Color legendEntryEvenColor) {
+		this.legendEntryEvenColorProperty().set(legendEntryEvenColor);
+	}
+	
+
+	public final ObjectProperty<Color> legendEntryOddColorProperty() {
+		return this.legendEntryOddColor;
+	}
+	
+
+	public final Color getLegendEntryOddColor() {
+		return this.legendEntryOddColorProperty().get();
+	}
+	
+
+	public final void setLegendEntryOddColor(final Color legendEntryOddColor) {
+		this.legendEntryOddColorProperty().set(legendEntryOddColor);
+	}
+	
 	
 	
 	

@@ -87,7 +87,7 @@ public class Main extends Application {
 		root.setTop(getMenuBar(root, window));
 		root.setLeft(overviewPane);
 		root.setCenter(new BattleGrid(battle));
-		root.setRight(new LegendPane(battle));
+		root.setRight(new LegendPane(battle.get()));
 //		root.setBottom(new InfoPane(overviewPane.actorList.getSelectionModel().selectedItemProperty()));
 	}
 	

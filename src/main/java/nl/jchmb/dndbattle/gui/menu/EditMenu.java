@@ -21,6 +21,7 @@ import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Avatar;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Status;
+import nl.jchmb.dndbattle.gui.legend.LegendOptions;
 import nl.jchmb.dndbattle.gui.options.GridOptions;
 import nl.jchmb.dndbattle.gui.options.StatusOptions;
 import nl.jchmb.dndbattle.gui.statuses.StatusList;
@@ -39,7 +40,8 @@ public class EditMenu extends Menu {
 		this.battle = battle;
 		
 		getItems().addAll(
-			getGridOptionsItem(pane),
+			getGridOptionsItem(pane, window),
+			getLegendOptionsItem(pane, window),
 //			getEditStatusesItem(pane, window),
 			getAddActorItem(),
 			getAddStatusItem(),
@@ -47,11 +49,21 @@ public class EditMenu extends Menu {
 		);
 	}
 	
-	private final MenuItem getGridOptionsItem(BorderPane pane) {
+	private final MenuItem getGridOptionsItem(BorderPane pane, Stage window) {
 		MenuItem item = new MenuItem("Grid options");
 		item.setOnAction(event -> {
 			GridOptions gridOptions = new GridOptions(battle.get());
-			gridOptions.show(pane.getCenter());
+//			gridOptions.show(pane.getCenter());
+			Popups.show(gridOptions, window, "Grid options");
+		});
+		return item;
+	}
+	
+	private final MenuItem getLegendOptionsItem(BorderPane pane, Stage window) {
+		MenuItem item = new MenuItem("Legend options");
+		item.setOnAction(event -> {
+			LegendOptions legendOptions = new LegendOptions(battle.get());
+			Popups.show(legendOptions, window, "Legend options");
 		});
 		return item;
 	}
@@ -59,7 +71,11 @@ public class EditMenu extends Menu {
 	private final MenuItem getEditStatusesItem(BorderPane pane, Stage window) {
 		MenuItem item = new MenuItem("Edit statuses");
 		item.setOnAction(event -> {
-			Popups.show(new StatusOptions(battle.get()), window);
+			Popups.show(
+				new StatusOptions(battle.get()),
+				window,
+				"Edit statuses"
+			);
 		});
 		return item;
 	}

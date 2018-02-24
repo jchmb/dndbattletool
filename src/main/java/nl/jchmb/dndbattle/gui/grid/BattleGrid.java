@@ -58,7 +58,7 @@ public class BattleGrid extends Pane {
 		this.prefWidthProperty().bind(
 			BindingUtils.binding(
 				this.gridSize,
-				gs -> gs.getX()
+				gs -> gs.getX() + 250
 			)
 		);
 		
