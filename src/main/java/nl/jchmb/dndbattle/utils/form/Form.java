@@ -20,8 +20,10 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -35,6 +37,12 @@ public class Form extends GridPane {
 	
 	public Form() {
 		setPadding(new Insets(10, 10, 10, 10));
+		ColumnConstraints cc1 = new ColumnConstraints();
+		cc1.setMinWidth(150.0f);
+		getColumnConstraints().add(cc1);
+		ColumnConstraints cc2 = new ColumnConstraints();
+		cc2.setHgrow(Priority.ALWAYS);
+		getColumnConstraints().add(cc2);
 	}
 	
 	public void addField(Node node, String label) {
@@ -144,13 +152,13 @@ public class Form extends GridPane {
 			File file = chooser.showOpenDialog(null);
 			if (file != null) {
 				property.set(file);
-				button.setText(property.get().getAbsolutePath());
+				button.setText(property.get().getName());
 			}
 		});
 		if (property.get() == null) {
 			button.setText(missingText);
 		} else {
-			button.setText(property.get().getAbsolutePath());
+			button.setText(property.get().getName());
 		}
 		final Button deleteButton = new Button("[X]");
 		deleteButton.setOnAction(event -> {

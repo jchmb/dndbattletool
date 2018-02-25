@@ -32,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
@@ -122,9 +123,9 @@ public class ActorEditor extends PopOverForm {
 		);
 		
 		/* Statuses */
-		ListView<Status> statusesField = new StatusList(actor.statusesProperty(), false);
+		ListView<Status> statusesField = new StatusList(actor.statusesProperty(), (Stage) Window.getWindows().get(0), false);
 		HBox addStatusField = new HBox();
-		ComboBox<Status> availableStatuses = new StatusComboBox(battle.statusesProperty());
+		ComboBox<Status> availableStatuses = new StatusComboBox(battle.statusesProperty(), (Stage) Window.getWindows().get(0));
 		Button addStatusButton = new Button("Add");
 		addStatusButton.setOnAction(event -> {
 			Status selected = availableStatuses.getValue();
@@ -146,8 +147,8 @@ public class ActorEditor extends PopOverForm {
 //		ActorComboBox test = new ActorComboBox(battle);
 		
 		/* Character sheet */
-		TextField sheetField = new TextField();
-		bind(sheetField.textProperty(), actor.sheetProperty());
+//		TextField sheetField = new TextField();
+//		bind(sheetField.textProperty(), actor.sheetProperty());
 		
 		statusesField.itemsProperty().bind(actor.statusesProperty());
 		
@@ -160,7 +161,6 @@ public class ActorEditor extends PopOverForm {
 		addField(heightField, "Height");
 		addField(avatarField, "Avatar");
 		addField(statusesContainer, "Statuses");
-		addField(sheetField, "Sheet URL");
 //		addField(test, "Test");
 		
 		

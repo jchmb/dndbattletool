@@ -13,10 +13,13 @@ import javafx.collections.ListChangeListener.Change;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.utils.BindingUtils;
 
 public class LegendPane extends GridPane {
 	private final Battle battle;
@@ -28,6 +31,12 @@ public class LegendPane extends GridPane {
 		super();
 		
 		this.battle = battle;
+		this.backgroundProperty().bind(
+			BindingUtils.binding(
+				battle.legendEntryEvenColorProperty(),
+				color -> new Background(new BackgroundFill(color, null, null))
+			)
+		);
 		setAlignment(Pos.TOP_RIGHT);
 		battle.actorsProperty().addListener(this::onChanged);
 		

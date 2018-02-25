@@ -58,6 +58,12 @@ public class BattleJsonReader {
 		if (o.containsKey("legend_entry_odd_color")) {
 			battle.setLegendEntryOddColor(readColor((JSONObject) o.get("legend_entry_odd_color")));
 		}
+		if (o.containsKey("legend_entry_font_color")) {
+			battle.setLegendEntryFontColor(readColor((JSONObject) o.get("legend_entry_font_color")));
+		}
+		if (o.containsKey("legend_entry_height")) {
+			battle.setLegendEntryHeight(toInt(o, "legend_entry_height"));
+		}
 	}
 	
 	private int toInt(JSONObject o, String key) {

@@ -45,9 +45,9 @@ public class StatusEditor extends Form {
 		);
 		
 		/* Image symbol */
-		addOptionalImageFileField(
-			status.imageFileProperty(),
-			"Image symbol"
-		);
+//		addOptionalImageFileField(
+//			status.imageFileProperty(),
+//			"Image symbol"
+//		);
 	}
 }

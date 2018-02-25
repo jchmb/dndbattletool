@@ -55,6 +55,8 @@ public class BattleJsonWriter {
 		o.put("border_color", serializeColor(battle.getBorderColor()));
 		o.put("legend_entry_even_color", serializeColor(battle.getLegendEntryEvenColor()));
 		o.put("legend_entry_odd_color", serializeColor(battle.getLegendEntryOddColor()));
+		o.put("legend_entry_font_color", serializeColor(battle.getLegendEntryFontColor()));
+		o.put("legend_entry_height", battle.getLegendEntryHeight());
 		
 		return o;
 	}

@@ -69,21 +69,20 @@ public class LegendEntry extends Pane {
 		this.battle = battle;
 		this.actor = actor;
 		this.index = index;
-		this.minHeightProperty().bind(battle.cellSizeProperty());
+		this.minHeightProperty().bind(battle.legendEntryHeightProperty());
 		this.prefWidthProperty().set(ENTRY_WIDTH);
-		final IntegerProperty cellSizeProperty = battle.cellSizeProperty();
 		final ObjectProperty<File> urlProperty = actor.avatarProperty();
 		this.image.bind(new ObjectBinding<Image>(){
 			{
 				super.bind(
-					cellSizeProperty,
+					battle.legendEntryHeightProperty(),
 					urlProperty
 				);
 			}
 			
 			@Override
 			protected Image computeValue() {
-				int size = cellSizeProperty.get();
+				int size = battle.getLegendEntryHeight();
 				return Images.load(urlProperty.get(), size, size).get();
 			}
 			
@@ -103,22 +102,23 @@ public class LegendEntry extends Pane {
 		/* Name */
 		nameView = new Label();
 		nameView.textProperty().bind(actor.nameProperty());
-		nameView.translateXProperty().bind(Bindings.add(3.0f, battle.cellSizeProperty()));
+		nameView.translateXProperty().bind(Bindings.add(3.0f, battle.legendEntryHeightProperty()));
 		nameView.setTranslateY(5.0f);
 		Font nameFont = Font.font("Verdana", FontWeight.BOLD, 15);
 		nameView.setFont(nameFont);
+		nameView.textFillProperty().bind(battle.legendEntryFontColorProperty());
 		
 		/* Healthbar */
 		healthView = new Canvas(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
 		drawHealthBar();
-		healthView.translateXProperty().bind(Bindings.add(3.0f, battle.cellSizeProperty()));
+		healthView.translateXProperty().bind(Bindings.add(3.0f, battle.legendEntryHeightProperty()));
 		healthView.setTranslateY(22.0f);
 		actor.currentHpProperty().addListener(this::onHpChanged);
 		actor.maxHpProperty().addListener(this::onHpChanged);
 		
 		/* Hp */
 		hpView = new Label();
-		hpView.setTextFill(Color.BLACK);
+		hpView.textFillProperty().bind(battle.legendEntryFontColorProperty());
 		hpView.textProperty().bind(new StringBinding() {
 			{
 				super.bind(actor.hiddenHpProperty(), actor.currentHpProperty(), actor.maxHpProperty());
@@ -137,7 +137,7 @@ public class LegendEntry extends Pane {
 				}
 			}
 		});
-		hpView.translateXProperty().bind(Bindings.add(3.0f, battle.cellSizeProperty()));
+		hpView.translateXProperty().bind(Bindings.add(3.0f, battle.legendEntryHeightProperty()));
 		hpView.setTranslateY(30.0f);
 		
 		/* Position */
@@ -148,15 +148,16 @@ public class LegendEntry extends Pane {
 				position -> position.add(new Vector2(1, 1)).toString()
 			)
 		);
-		positionView.translateXProperty().bind(Bindings.add(10.0f + HEALTH_BAR_WIDTH, battle.cellSizeProperty()));
+		positionView.translateXProperty().bind(Bindings.add(10.0f + HEALTH_BAR_WIDTH, battle.legendEntryHeightProperty()));
 		positionView.setTranslateY(30.0f);
+		positionView.textFillProperty().bind(battle.legendEntryFontColorProperty());
 		positionView.setFont(new Font("Verdana", 12.0d));
 		
 		/* Statuses view */
 		statusesView = new HBox();
 //		actor.statusesProperty().addListener(statusesChangeListener);
 		statusesView.translateXProperty().bind(
-			Bindings.add(10.0f + HEALTH_BAR_WIDTH, battle.cellSizeProperty())
+			Bindings.add(10.0f + HEALTH_BAR_WIDTH, battle.legendEntryHeightProperty())
 		);
 		ListProperty<Node> statusesViewList = new SimpleListProperty<>();
 		statusesViewList.bind(
