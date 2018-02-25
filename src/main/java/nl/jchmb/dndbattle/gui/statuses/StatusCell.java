@@ -13,8 +13,10 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.utils.CRUDCell;
+import nl.jchmb.dndbattle.utils.form.Form;
 import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 public class StatusCell extends CRUDCell<Status> {
@@ -24,16 +26,17 @@ public class StatusCell extends CRUDCell<Status> {
 	public StatusCell(
 			ListProperty<Status> list,
 			Function<Status, StringProperty> namePropertyFn,
+			final Stage window,
 			boolean editable,
 			boolean deletable
 	) {
-		super(list, namePropertyFn);
+		super(list, namePropertyFn, window);
 		this.editable = editable;
 		this.deletable = deletable;
 	}
 
 	@Override
-	protected PopOverForm getEditor(Status item) {
+	protected Form getEditor(Status item) {
 		return new StatusEditor(item);
 	}
 	

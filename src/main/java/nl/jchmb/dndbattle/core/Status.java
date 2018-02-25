@@ -16,6 +16,7 @@ public class Status {
 	private final StringProperty symbol = new SimpleStringProperty("S");
 	private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<Color>(Color.WHITE);
 	private final ObjectProperty<Color> textColor = new SimpleObjectProperty<Color>(Color.BLACK);
+	private final ObjectProperty<File> imageFile = new SimpleObjectProperty<File>();
 	
 	public final StringProperty nameProperty() {
 		return this.name;
@@ -77,4 +78,19 @@ public class Status {
 	public String toString() {
 		return getName();
 	}
+
+	public final ObjectProperty<File> imageFileProperty() {
+		return this.imageFile;
+	}
+	
+
+	public final File getImageFile() {
+		return this.imageFileProperty().get();
+	}
+	
+
+	public final void setImageFile(final File imageFile) {
+		this.imageFileProperty().set(imageFile);
+	}
+	
 }

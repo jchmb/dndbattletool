@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javafx.beans.WeakListener;
 import javafx.beans.binding.ObjectBinding;
@@ -14,12 +15,16 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.WeakChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.utils.BindingUtils;
 
@@ -125,6 +130,58 @@ public class Form extends GridPane {
 //		property.bind(colorField.valueProperty());
 		bindStrongly(property, colorField.valueProperty());
 		addField(colorField, label);
+	}
+	
+	protected void addOptionalFileField(
+		final ObjectProperty<File> property,
+		final Supplier<FileChooser> chooserSupplier,
+		final String missingText,
+		final String label
+	) {
+		final Button button = new Button();
+		button.setOnAction(event -> {
+			FileChooser chooser = chooserSupplier.get();
+			File file = chooser.showOpenDialog(null);
+			if (file != null) {
+				property.set(file);
+				button.setText(property.get().getAbsolutePath());
+			}
+		});
+		if (property.get() == null) {
+			button.setText(missingText);
+		} else {
+			button.setText(property.get().getAbsolutePath());
+		}
+		final Button deleteButton = new Button("[X]");
+		deleteButton.setOnAction(event -> {
+			button.setText(missingText);
+			property.set(null);
+		});
+		final HBox containerField = new HBox();
+		containerField.getChildren().addAll(
+			button,
+			deleteButton
+		);
+		addField(containerField, label);
+	}
+	
+	protected void addOptionalImageFileField(
+		final ObjectProperty<File> property,
+		final String label
+	) {
+		addOptionalFileField(
+			property,
+			() -> {
+				final FileChooser chooser = new FileChooser();
+				chooser.setTitle("Choose an image file");
+				chooser.getExtensionFilters().add(
+					new ExtensionFilter("Image file", "*.jpg", "*.png")
+				);
+				return chooser;
+			},
+			"(no image)",
+			label
+		);
 	}
 	
 	protected final <T> void bindStrongly(final Property<T> modelProperty, final Property<T> fieldProperty) {

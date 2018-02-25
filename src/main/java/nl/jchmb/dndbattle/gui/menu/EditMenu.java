@@ -71,7 +71,7 @@ public class EditMenu extends Menu {
 		MenuItem item = new MenuItem("Edit statuses");
 		item.setOnAction(event -> {
 			Popups.show(
-				new StatusOptions(battle.get()),
+				new StatusOptions(battle.get(), window),
 				window,
 				"Edit statuses"
 			);

@@ -6,18 +6,19 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.gui.statuses.StatusList;
 
 public class StatusOptions extends BorderPane {
 	private final Battle battle;
-	public StatusOptions(final Battle battle) {
+	public StatusOptions(final Battle battle, final Stage window) {
 		super();
 		
 		this.battle = battle;
 		setPrefSize(175, 400);
-		final StatusList list = new StatusList(battle.statusesProperty(), true);
+		final StatusList list = new StatusList(battle.statusesProperty(), window, true);
 		final Pane emptyPane = new Pane();
 //		emptyPane.setPrefSize(600, 400);
 		

@@ -36,8 +36,9 @@ public class Battle {
 	private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<>(Color.WHITE);
 	private final ObjectProperty<Color> borderColor = new SimpleObjectProperty<>(Color.GRAY);
 	private final IntegerProperty legendColumns = new SimpleIntegerProperty(1);
-	private final ObjectProperty<Color> legendEntryEvenColor = new SimpleObjectProperty(Color.WHITE);
-	private final ObjectProperty<Color> legendEntryOddColor = new SimpleObjectProperty(Color.LIGHTGRAY);
+	private final ObjectProperty<Color> legendEntryEvenColor = new SimpleObjectProperty<>(Color.WHITE);
+	private final ObjectProperty<Color> legendEntryOddColor = new SimpleObjectProperty<>(Color.LIGHTGRAY);
+	private final ObjectProperty<Color> legendEntryFontColor = new SimpleObjectProperty<>(Color.BLACK);
 	
 	public Battle() {
 		
@@ -227,6 +228,21 @@ public class Battle {
 	public final void setLegendEntryOddColor(final Color legendEntryOddColor) {
 		this.legendEntryOddColorProperty().set(legendEntryOddColor);
 	}
+
+	public final ObjectProperty<Color> legendEntryFontColorProperty() {
+		return this.legendEntryFontColor;
+	}
+	
+
+	public final Color getLegendEntryFontColor() {
+		return this.legendEntryFontColorProperty().get();
+	}
+	
+
+	public final void setLegendEntryFontColor(final Color legendEntryFontColor) {
+		this.legendEntryFontColorProperty().set(legendEntryFontColor);
+	}
+	
 	
 	
 	

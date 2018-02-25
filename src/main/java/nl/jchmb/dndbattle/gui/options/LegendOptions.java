@@ -9,9 +9,24 @@ public class LegendOptions extends Form {
 		super();
 		
 		/* Legend entry even color */
-		addColorField(battle.legendEntryEvenColorProperty(), new ColorPicker(), "Entry background color (even)");
+		addColorField(
+			battle.legendEntryEvenColorProperty(),
+			new ColorPicker(),
+			"Entry background color (even)"
+		);
 		
 		/* Legend entry odd color */
-		addColorField(battle.legendEntryOddColorProperty(), new ColorPicker(), "Entry background color (odd)");
+		addColorField(
+			battle.legendEntryOddColorProperty(),
+			new ColorPicker(),
+			"Entry background color (odd)"
+		);
+		
+		/* Legend entry font color */
+		addColorField(
+			battle.legendEntryFontColorProperty(),
+			new ColorPicker(),
+			"Entry font color"
+		);
 	}
 }
