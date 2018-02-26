@@ -32,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
@@ -40,85 +41,82 @@ import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.gui.statuses.StatusComboBox;
 import nl.jchmb.dndbattle.gui.statuses.StatusList;
 import nl.jchmb.dndbattle.utils.BindingUtils;
+import nl.jchmb.dndbattle.utils.form.Form;
 import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 /**
  * @author jochem
  *
  */
-public class ActorEditor extends PopOverForm {
+public class ActorEditor extends Form {
 	private final Actor actor;
 	
 	public ActorEditor(final Actor actor, final Battle battle) {
 		super();
 		
 		this.actor = actor;
-		this.setDetachable(false);
-		this.setSkin(this.createDefaultSkin());
 		
 		buildFields(battle);
-		finish();
 	}
 	
 	protected void buildFields(final Battle battle) {
 		/* Name */
-		TextField nameField = new TextField();
-		bind(nameField.textProperty(), actor.nameProperty());
+		addStringField(
+			actor.nameProperty(),
+			new TextField(),
+			"Name"
+		);
+		
+		/* Gender */
+		addComboBoxField(
+			actor.genderProperty(),
+			battle.gendersProperty(),
+			"Gender"
+		);
 		
 		/* Initiative */
-		Spinner<Integer> initiativeField = new Spinner<Integer>(-20, 100, 1);
-		bind(initiativeField.valueFactoryProperty().get().valueProperty(), actor.initiativeProperty().asObject());
-		initiativeField.setEditable(true);
+		addIntegerField(
+			actor.initiativeProperty(),
+			new Spinner<Integer>(-20, Integer.MAX_VALUE, 1),
+			"Initiative"
+		);
 		
 		/* HP */
-		Spinner<Integer> currentHpField = new Spinner<Integer>(-10, Integer.MAX_VALUE, 1);
-		bind(currentHpField.valueFactoryProperty().get().valueProperty(), actor.currentHpProperty().asObject());
-		currentHpField.setEditable(true);
+		addIntegerField(
+			actor.currentHpProperty(),
+			new Spinner<Integer>(-10, Integer.MAX_VALUE, 1),
+			"Current HP"
+		);
 		
-		Spinner<Integer> maxHpField = new Spinner<Integer>(1, Integer.MAX_VALUE, 1);
-		bind(maxHpField.valueFactoryProperty().get().valueProperty(), actor.maxHpProperty().asObject());
-		maxHpField.setEditable(true);
+		/* Max HP */
+		addIntegerField(
+			actor.maxHpProperty(),
+			new Spinner<Integer>(1, Integer.MAX_VALUE, 1),
+			"Max HP"
+		);
 		
 		/* Hide HP */
-		CheckBox hiddenField = new CheckBox();
-		bind(hiddenField.selectedProperty(), actor.hiddenHpProperty());
+		addBooleanField(
+			actor.hiddenHpProperty(),
+			"Hide HP"
+		);
 		
 		/* Avatar */
-		Button avatarField = new Button("...choose image...");
-		avatarField.setOnAction(event -> {
-			FileChooser chooser = new FileChooser();
-			chooser.setTitle("Select avatar");
-			chooser.setInitialDirectory(new File("res"));
-			chooser.getExtensionFilters().add(
-				new ExtensionFilter("Image files", "*.png", "*.jpg", "*.jpeg")
-			);
-			File file = chooser.showOpenDialog(Window.getWindows().get(0));
-			if (file != null) {
-				actor.setAvatar(file);
-			}
-		});
-		bindObject(
-			avatarField.textProperty(),
+		addImageFileFieldWithDefault(
 			actor.avatarProperty(),
-			avatar -> avatar.getAbsolutePath()
+			new File("res/unknown.jpg"),
+			"(no image)",
+			"[Reset]",
+			"Avatar"
 		);
 		
 		/* Size */
-		Spinner<Integer> widthField = new Spinner<Integer>(1, 5, 1);
-		widthField.getValueFactory().setValue(actor.getSize().getX());
-		widthField.valueProperty().addListener(
-			new WeakChangeListener<Integer>(
-				(prop, oldValue, newValue) -> actor.setSize(new Vector2(newValue, actor.getSize().getY()))
-			)
-		);
-		
-		
-		Spinner<Integer> heightField = new Spinner<Integer>(1, 5, 1);
-		heightField.getValueFactory().setValue(actor.getSize().getY());
-		heightField.valueProperty().addListener(
-			new WeakChangeListener<Integer>(
-				(prop, oldValue, newValue) -> actor.setSize(new Vector2(actor.getSize().getX(), newValue))
-			)
+		addVector2Field(
+			actor.sizeProperty(),
+			new Spinner<Integer>(1, 5, 1),
+			new Spinner<Integer>(1, 5, 1),
+			"Width",
+			"Height"
 		);
 		
 		/* Statuses */
@@ -146,21 +144,11 @@ public class ActorEditor extends PopOverForm {
 //		ActorComboBox test = new ActorComboBox(battle);
 		
 		/* Character sheet */
-		TextField sheetField = new TextField();
-		bind(sheetField.textProperty(), actor.sheetProperty());
+//		TextField sheetField = new TextField();
+//		bind(sheetField.textProperty(), actor.sheetProperty());
 		
 		statusesField.itemsProperty().bind(actor.statusesProperty());
-		
-		addField(nameField, "Name");
-		addField(initiativeField, "Initiative");
-		addField(currentHpField, "Current HP");
-		addField(maxHpField, "Max HP");
-		addField(hiddenField, "Hide HP");
-		addField(widthField, "Width");
-		addField(heightField, "Height");
-		addField(avatarField, "Avatar");
 		addField(statusesContainer, "Statuses");
-		addField(sheetField, "Sheet URL");
 //		addField(test, "Test");
 		
 		

@@ -1,17 +1,11 @@
 package nl.jchmb.dndbattle.gui.statuses;
 
-import java.io.File;
-
-import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
-import javafx.stage.FileChooser.ExtensionFilter;
 import nl.jchmb.dndbattle.core.Status;
-import nl.jchmb.dndbattle.utils.form.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.Form;
 
-public class StatusEditor extends PopOverForm {
+public class StatusEditor extends Form {
 	private final Status status;
 	
 	public StatusEditor(final Status status) {
@@ -19,29 +13,41 @@ public class StatusEditor extends PopOverForm {
 		
 		this.status = status;
 		buildFields();
-		finish();
 	}
 	
 	private void buildFields() {
 		/* Name */
-		TextField nameField = new TextField();
-		bind(nameField.textProperty(), status.nameProperty());
+		addStringField(
+			status.nameProperty(),
+			new TextField(),
+			"Name"
+		);
 		
 		/* Symbol */
-		TextField symbolField = new TextField();
-		bind(symbolField.textProperty(), status.symbolProperty());
+		addStringField(
+			status.symbolProperty(),
+			new TextField(),
+			"Symbol"
+		);
 		
 		/* Background color */
-		ColorPicker backgroundColorField = new ColorPicker();
-		bind(backgroundColorField.valueProperty(), status.backgroundColorProperty());
+		addColorField(
+			status.backgroundColorProperty(),
+			new ColorPicker(),
+			"Background color"
+		);
 		
 		/* Text color */
-		ColorPicker textColorField = new ColorPicker();
-		bind(textColorField.valueProperty(), status.textColorProperty());
+		addColorField(
+			status.textColorProperty(),
+			new ColorPicker(),
+			"Text color"
+		);
 		
-		addField(nameField, "Name");
-		addField(symbolField, "Symbol");
-		addField(backgroundColorField, "Background color");
-		addField(textColorField, "Text color");
+		/* Image symbol */
+//		addOptionalImageFileField(
+//			status.imageFileProperty(),
+//			"Image symbol"
+//		);
 	}
 }

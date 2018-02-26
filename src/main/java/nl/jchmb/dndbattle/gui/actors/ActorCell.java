@@ -21,8 +21,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.utils.Popups;
 
 /**
  * @author jochem
@@ -95,7 +98,7 @@ public class ActorCell extends ListCell<Actor> {
 		}
 	}
 	
-	private MenuItem getDuplicateItem(Actor actor) {
+	private static MenuItem getDuplicateItem(final Actor actor, final Battle battle) {
 		MenuItem item = new MenuItem("Duplicate");
 		item.setOnAction(event -> {
 			Actor duplicateActor = actor.duplicate();
@@ -105,13 +108,21 @@ public class ActorCell extends ListCell<Actor> {
 		return item;
 	}
 	
-	private void addContextMenu(Actor actor) {
+	private void addContextMenu(final Actor actor) {
+		setContextMenu(createContextMenu(actor, battle));
+	}
+	
+	public static ContextMenu createContextMenu(final Actor actor, final Battle battle) {
 		ContextMenu contextMenu = new ContextMenu();
 		
 		MenuItem editItem = new MenuItem("Edit");
 		editItem.setOnAction(event -> {
 			ActorEditor editor = new ActorEditor(actor, battle);
-			editor.show(this);
+			Popups.show(
+				editor,
+				(Stage) Window.getWindows().get(0),
+				"Edit actor"
+			);
 		});
 		
 		MenuItem deleteItem = new MenuItem("Delete");
@@ -121,9 +132,9 @@ public class ActorCell extends ListCell<Actor> {
 		
 		contextMenu.getItems().addAll(
 			editItem,
-			getDuplicateItem(actor),
+			getDuplicateItem(actor, battle),
 			deleteItem
 		);
-		setContextMenu(contextMenu);
+		return contextMenu;
 	}
 }

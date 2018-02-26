@@ -33,9 +33,19 @@ public class Battle {
 	private final ListProperty<Tile> tiles = new SimpleListProperty<>(
 		FXCollections.observableArrayList()	
 	);
+	private final ListProperty<Gender> genders = new SimpleListProperty<>(
+		FXCollections.observableArrayList()
+	);
+	private final ListProperty<Entity> entities = new SimpleListProperty<>(
+		FXCollections.observableArrayList()
+	);
 	private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<>(Color.WHITE);
 	private final ObjectProperty<Color> borderColor = new SimpleObjectProperty<>(Color.GRAY);
 	private final IntegerProperty legendColumns = new SimpleIntegerProperty(1);
+	private final ObjectProperty<Color> legendEntryEvenColor = new SimpleObjectProperty<>(Color.WHITE);
+	private final ObjectProperty<Color> legendEntryOddColor = new SimpleObjectProperty<>(Color.LIGHTGRAY);
+	private final ObjectProperty<Color> legendEntryFontColor = new SimpleObjectProperty<>(Color.BLACK);
+	private final IntegerProperty legendEntryHeight = new SimpleIntegerProperty(50);
 	
 	public Battle() {
 		
@@ -82,9 +92,23 @@ public class Battle {
 		setCellSize(50);
 		setBackgroundColor(Color.WHITE);
 		setBorderColor(Color.GRAY);
+		setLegendEntryHeight(50);
+		setLegendEntryEvenColor(Color.WHITE);
+		setLegendEntryOddColor(new Color(0.95f, 0.95f, 0.95f, 1.0f));
+		setLegendEntryFontColor(Color.BLACK);
 		setBackgroundImageFile(null);
+		resetGenders();
 		getActors().clear();
 		getStatuses().clear();
+	}
+	
+	private void resetGenders() {
+		genders.clear();
+		genders.addAll(
+			Gender.MALE,
+			Gender.FEMALE,
+			Gender.OTHER
+		);
 	}
 
 	public final ListProperty<Status> statusesProperty() {
@@ -194,6 +218,100 @@ public class Battle {
 	public final void setBackgroundImageFile(final File backgroundImageFile) {
 		this.backgroundImageFileProperty().set(backgroundImageFile);
 	}
+
+	public final ObjectProperty<Color> legendEntryEvenColorProperty() {
+		return this.legendEntryEvenColor;
+	}
+	
+
+	public final Color getLegendEntryEvenColor() {
+		return this.legendEntryEvenColorProperty().get();
+	}
+	
+
+	public final void setLegendEntryEvenColor(final Color legendEntryEvenColor) {
+		this.legendEntryEvenColorProperty().set(legendEntryEvenColor);
+	}
+	
+
+	public final ObjectProperty<Color> legendEntryOddColorProperty() {
+		return this.legendEntryOddColor;
+	}
+	
+
+	public final Color getLegendEntryOddColor() {
+		return this.legendEntryOddColorProperty().get();
+	}
+	
+
+	public final void setLegendEntryOddColor(final Color legendEntryOddColor) {
+		this.legendEntryOddColorProperty().set(legendEntryOddColor);
+	}
+
+	public final ObjectProperty<Color> legendEntryFontColorProperty() {
+		return this.legendEntryFontColor;
+	}
+	
+
+	public final Color getLegendEntryFontColor() {
+		return this.legendEntryFontColorProperty().get();
+	}
+	
+
+	public final void setLegendEntryFontColor(final Color legendEntryFontColor) {
+		this.legendEntryFontColorProperty().set(legendEntryFontColor);
+	}
+
+	public final IntegerProperty legendEntryHeightProperty() {
+		return this.legendEntryHeight;
+	}
+	
+
+	public final int getLegendEntryHeight() {
+		return this.legendEntryHeightProperty().get();
+	}
+	
+
+	public final void setLegendEntryHeight(final int legendEntryHeight) {
+		this.legendEntryHeightProperty().set(legendEntryHeight);
+	}
+
+	public final ListProperty<Gender> gendersProperty() {
+		return this.genders;
+	}
+	
+
+	public final ObservableList<Gender> getGenders() {
+		return this.gendersProperty().get();
+	}
+	
+
+	public final void setGenders(final ObservableList<Gender> genders) {
+		this.gendersProperty().set(genders);
+	}
+	
+	public final Gender findGenderById(final int id) {
+		return genders.stream()
+			.filter(gender -> gender.getId() == id)
+			.findFirst()
+			.orElse(Gender.OTHER);
+	}
+
+	public final ListProperty<Entity> entitiesProperty() {
+		return this.entities;
+	}
+	
+
+	public final ObservableList<Entity> getEntities() {
+		return this.entitiesProperty().get();
+	}
+	
+
+	public final void setEntities(final ObservableList<Entity> entities) {
+		this.entitiesProperty().set(entities);
+	}
+	
+	
 	
 	
 	

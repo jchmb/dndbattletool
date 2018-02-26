@@ -2,6 +2,7 @@ package nl.jchmb.dndbattle.gui.statuses;
 
 import javafx.beans.property.ListProperty;
 import javafx.scene.control.ComboBox;
+import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Status;
 
 public class StatusComboBox extends ComboBox<Status> {

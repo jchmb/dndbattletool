@@ -20,8 +20,10 @@ import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Avatar;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.core.Entity;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.gui.options.GridOptions;
+import nl.jchmb.dndbattle.gui.options.LegendOptions;
 import nl.jchmb.dndbattle.gui.options.StatusOptions;
 import nl.jchmb.dndbattle.gui.statuses.StatusList;
 import nl.jchmb.dndbattle.utils.Popups;
@@ -39,29 +41,10 @@ public class EditMenu extends Menu {
 		this.battle = battle;
 		
 		getItems().addAll(
-			getGridOptionsItem(pane),
-//			getEditStatusesItem(pane, window),
 			getAddActorItem(),
-			getAddStatusItem(),
-			getAddTilesetItem()
+			getAddEntityItem()
+//			getAddTilesetItem()
 		);
-	}
-	
-	private final MenuItem getGridOptionsItem(BorderPane pane) {
-		MenuItem item = new MenuItem("Grid options");
-		item.setOnAction(event -> {
-			GridOptions gridOptions = new GridOptions(battle.get());
-			gridOptions.show(pane.getCenter());
-		});
-		return item;
-	}
-	
-	private final MenuItem getEditStatusesItem(BorderPane pane, Stage window) {
-		MenuItem item = new MenuItem("Edit statuses");
-		item.setOnAction(event -> {
-			Popups.show(new StatusOptions(battle.get()), window);
-		});
-		return item;
 	}
 	
 	private final MenuItem getAddActorItem() {
@@ -81,16 +64,16 @@ public class EditMenu extends Menu {
 		return item;
 	}
 	
-	private final MenuItem getAddStatusItem() {
-		MenuItem item = new MenuItem("Add status");
+	private final MenuItem getAddEntityItem() {
+		MenuItem item = new MenuItem("Add object");
 		item.setOnAction(event -> {
-			Status status = new Status();
-			status.setName("New status");
-			battle.get().statusesProperty().add(status);
+			Entity entity = new Entity();
+			entity.setName("New object");
+			battle.get().entitiesProperty().add(entity);
 		});
 		item.setAccelerator(
 			new KeyCodeCombination(
-				KeyCode.T,
+				KeyCode.J,
 				KeyCombination.CONTROL_DOWN
 			)
 		);

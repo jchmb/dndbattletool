@@ -7,10 +7,10 @@ import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.gui.grid.BattleGrid;
 
 public class MainPane extends TabPane {
-	private final ObjectProperty<Battle> battle;
+	private final Battle battle;
 	private final BattleGrid grid;
 	
-	public MainPane(final ObjectProperty<Battle> battle) {
+	public MainPane(final Battle battle) {
 		this.grid = new BattleGrid(battle);
 		this.battle = battle;
 		

@@ -22,7 +22,7 @@ import javafx.collections.ObservableList;
  * @author jochem
  *
  */
-public class Actor {
+public class Actor implements Positionable {
 	private final StringProperty name = new SimpleStringProperty();
 	private final IntegerProperty initiative = new SimpleIntegerProperty();
 	private final ObjectProperty<File> avatar = new SimpleObjectProperty<>();

@@ -11,6 +11,8 @@ import org.json.simple.JSONObject;
 import javafx.scene.paint.Color;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.core.Entity;
+import nl.jchmb.dndbattle.core.Gender;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.core.Vector2;
 
@@ -23,12 +25,22 @@ public class BattleJsonWriter {
 		for (Actor actor : battle.getActors()) {
 			serializeActor(actorArray, actor);
 		}
+		JSONArray entityArray = new JSONArray();
+		for (Entity entity : battle.getEntities()) {
+			serializeEntity(entityArray, entity);
+		}
 		JSONArray statusArray = new JSONArray();
 		for (Status status : battle.getStatuses()) {
 			serializeStatus(statusArray, status);
 		}
+		JSONArray genderArray = new JSONArray();
+		for (Gender gender : battle.getGenders()) {
+			serializeGender(genderArray, gender);
+		}
 		root.put("actors", actorArray); // TODO fix warning
 		root.put("statuses", statusArray);
+		root.put("entities", entityArray);
+		root.put("genders", genderArray);
 		root.put("options", serializeOptionsObject(battle));
 
 		FileWriter stream;
@@ -51,7 +63,14 @@ public class BattleJsonWriter {
 		o.put("grid_size", serializeVector2(battle.getGridSize()));
 		o.put("cell_size", battle.getCellSize());
 		o.put("background_color", serializeColor(battle.getBackgroundColor()));
+		if (battle.getBackgroundImageFile() != null) {
+			o.put("background_image", battle.getBackgroundImageFile().getAbsolutePath());
+		}
 		o.put("border_color", serializeColor(battle.getBorderColor()));
+		o.put("legend_entry_even_color", serializeColor(battle.getLegendEntryEvenColor()));
+		o.put("legend_entry_odd_color", serializeColor(battle.getLegendEntryOddColor()));
+		o.put("legend_entry_font_color", serializeColor(battle.getLegendEntryFontColor()));
+		o.put("legend_entry_height", battle.getLegendEntryHeight());
 		
 		return o;
 	}
@@ -65,10 +84,23 @@ public class BattleJsonWriter {
 	}
 	
 	@SuppressWarnings("unchecked")
+	private void serializeEntity(JSONArray entityArray, Entity entity) {
+		JSONObject o = new JSONObject();
+		
+		o.put("name", entity.getName());
+		o.put("avatar", entity.getAvatar().getAbsolutePath());
+		o.put("position", serializeVector2(entity.getPosition()));
+		o.put("size", serializeVector2(entity.getSize()));
+		
+		entityArray.add(o);
+	}
+	
+	@SuppressWarnings("unchecked")
 	private void serializeActor(JSONArray actorArray, Actor actor) {
 		JSONObject o = new JSONObject();
 		
 		o.put("name", actor.getName());
+		o.put("gender", actor.getGender().getId());
 		o.put("initiative", actor.getInitiative());
 		o.put("current_hp", actor.getCurrentHp());
 		o.put("max_hp", actor.getMaxHp());
@@ -92,6 +124,19 @@ public class BattleJsonWriter {
 		o.put("text_color", serializeColor(status.getTextColor()));
 		
 		statusArray.add(o);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void serializeGender(JSONArray genderArray, Gender gender) {
+		JSONObject o = new JSONObject();
+		
+		o.put("name", gender.getSymbol());
+		o.put("subject_pronoun", gender.getSubjectPronoun());
+		o.put("object_pronoun", gender.getObjectPronoun());
+		o.put("possessive_pronoun", gender.getPossessivePronoun());
+		o.put("id", gender.getId());
+		
+		genderArray.add(o);
 	}
 	
 	@SuppressWarnings("unchecked")

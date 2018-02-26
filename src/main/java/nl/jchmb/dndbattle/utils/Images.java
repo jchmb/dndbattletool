@@ -27,6 +27,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 
 public class Images {
+	public static Optional<Image> load(File file) {
+		try {
+			return Optional.of(
+				new Image(
+					new FileInputStream(file)
+				)
+			);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+	
 	public static Optional<Image> load(File file, double w, double h) {
 		try {
 			return Optional.of(

@@ -3,6 +3,8 @@
  */
 package nl.jchmb.dndbattle.gui;
 
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
@@ -17,18 +19,12 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
-import nl.jchmb.dndbattle.core.events.AttackDamageAction;
-import nl.jchmb.dndbattle.core.events.AttackMissedAction;
-import nl.jchmb.dndbattle.core.events.ComplexEvent;
-import nl.jchmb.dndbattle.core.events.MoveAction;
-import nl.jchmb.dndbattle.core.events.registry.BattleEventRegistry;
-import nl.jchmb.dndbattle.core.events.registry.NothingAction;
 import nl.jchmb.dndbattle.gui.actors.ActorList;
 import nl.jchmb.dndbattle.gui.grid.BattleGrid;
-import nl.jchmb.dndbattle.gui.info.InfoPane;
 import nl.jchmb.dndbattle.gui.legend.LegendPane;
 import nl.jchmb.dndbattle.gui.menu.EditMenu;
 import nl.jchmb.dndbattle.gui.menu.FileMenu;
+import nl.jchmb.dndbattle.gui.menu.OptionsMenu;
 import nl.jchmb.dndbattle.gui.menu.UploadMenu;
 import nl.jchmb.dndbattle.utils.BindingUtils;
 
@@ -37,21 +33,20 @@ import nl.jchmb.dndbattle.utils.BindingUtils;
  *
  */
 public class Main extends Application {
-	private static final String VERSION = "0.3";
+	private static final String VERSION = "0.4";
 	
 	private final ObjectProperty<Battle> battle = new SimpleObjectProperty<>(new Battle());
-	private final BattleEventRegistry eventRegistry = new BattleEventRegistry();
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			/* Initialize stuff */
-			registerBattleEvents();
+			battle.get().reset();
 			BorderPane root = new BorderPane();
 			buildGui(root, primaryStage);
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(
-				getClass().getResource("style.css").toExternalForm()
+				"file:///" + new File("res/style.css").getAbsolutePath().replace("\\", "/")
 			);
 			primaryStage.titleProperty().bind(
 				BindingUtils.binding(
@@ -77,6 +72,7 @@ public class Main extends Application {
 		menuBar.getMenus().addAll(
 			new FileMenu(battle, root),
 			new EditMenu(battle, root, window),
+			new OptionsMenu(battle.get(), root),
 			new UploadMenu(root)
 		);
 		return menuBar;
@@ -86,19 +82,9 @@ public class Main extends Application {
 		OverviewPane overviewPane = new OverviewPane(battle);
 		root.setTop(getMenuBar(root, window));
 		root.setLeft(overviewPane);
-		root.setCenter(new BattleGrid(battle));
-		root.setRight(new LegendPane(battle));
+		root.setCenter(new BattleGrid(battle.get()));
+		root.setRight(new LegendPane(battle.get()));
 //		root.setBottom(new InfoPane(overviewPane.actorList.getSelectionModel().selectedItemProperty()));
-	}
-	
-	private void registerBattleEvents() {
-		eventRegistry
-			.register("move", MoveAction.class)
-			.register("attack_missed", AttackMissedAction.class)
-			.register("attack_damage", AttackDamageAction.class)
-			.register("complex", ComplexEvent.class)
-			.register("nothing", NothingAction.class)
-		;
 	}
 	
 	public static void main(String[] args) {

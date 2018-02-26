@@ -4,22 +4,17 @@ package nl.jchmb.dndbattle.utils;
  * 
  */
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.function.Function;
 
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import nl.jchmb.dndbattle.utils.form.PopOverForm;
+import javafx.stage.Stage;
+import nl.jchmb.dndbattle.utils.form.Form;
 
 /**
  * @author jochem
@@ -64,13 +59,16 @@ public abstract class CRUDCell<T> extends ListCell<T> {
 		}
 	}
 	
-	protected abstract PopOverForm getEditor(T item);
+	protected abstract Form getEditor(T item);
 	
 	protected MenuItem getEditItem(T item) {
 		MenuItem editItem = new MenuItem("Edit");
 		editItem.setOnAction(event -> {
-			PopOverForm editor = getEditor(item);
-			editor.show(this);
+			Form editor = getEditor(item);
+			Popups.showForm(
+				editor,
+				"Edit"
+			);
 		});
 		return editItem;
 	}
@@ -96,6 +94,12 @@ public abstract class CRUDCell<T> extends ListCell<T> {
 			getEditItem(item),
 			getDeleteItem(item)
 		);
+	}
+	
+	public ContextMenu produceContextMenu(final T item) {
+		ContextMenu contextMenu = new ContextMenu();
+		buildContextMenu(contextMenu, item);
+		return contextMenu;
 	}
 }
 

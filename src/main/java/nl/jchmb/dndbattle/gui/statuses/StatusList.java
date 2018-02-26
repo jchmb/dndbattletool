@@ -3,6 +3,7 @@ package nl.jchmb.dndbattle.gui.statuses;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.ListView;
+import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Status;
 

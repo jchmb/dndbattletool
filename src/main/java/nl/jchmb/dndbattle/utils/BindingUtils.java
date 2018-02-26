@@ -7,6 +7,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WeakChangeListener;
 import javafx.scene.control.Spinner;
@@ -71,5 +72,17 @@ public class BindingUtils {
 			}
 			
 		};
+	}
+	
+	public static <T> WeakChangeListener<T> weakChangeSetter(Property<T> property) {
+		return new WeakChangeListener<>(
+			(prop, oldValue, newValue) -> property.setValue(newValue)
+		);
+	}
+	
+	public static WeakChangeListener<String> weakChangeSetter(StringProperty property) {
+		return new WeakChangeListener<>(
+			(prop, oldValue, newValue) -> property.set(newValue)
+		);
 	}
 }
