@@ -59,4 +59,12 @@ public class Vector2 {
 	public String toString() {
 		return String.format("(%s, %s)", x, y);
 	}
+	
+	public String getXml() {
+		return String.format(
+			"<vector x=\"%s\" y=\"%s\" />",
+			x,
+			y
+		);
+	}
 }

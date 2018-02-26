@@ -224,9 +224,50 @@ public class Actor implements Positionable {
 		this.genderProperty().set(gender);
 	}
 	
+	public final String asSubjectString(final boolean primary) {
+		return primary ?
+			getName() :
+			getGender().getSubjectPronoun();
+	}
+	
+	public final String asObjectString(final boolean primary) {
+		return primary ?
+			getName() :
+			getGender().getObjectPronoun();
+	}
+	
+	public final String asPossessiveString(final boolean primary) {
+		return primary ?
+			(getName() + "'s") :
+			getGender().getPossessivePronoun();
+	}
+	
+	public final String asSubjectXml() {
+		return String.format(
+			"<actor name=\"%s\" pronoun=\"%s\" />",
+			getName(),
+			getGender().getSubjectPronoun()
+		);
+	}
+	
+	public final String asObjectXml() {
+		return String.format(
+			"<actor name=\"%s\" pronoun=\"%s\" />",
+			getName(),
+			getGender().getObjectPronoun()
+		);
+	}
+	
+	public final String asPossessiveXml() {
+		return String.format(
+			"<actor name=\"%s\" pronoun=\"%s\" />",
+			getName(),
+			getGender().getPossessivePronoun()
+		);
+	}
+	
 	@Override
 	public String toString() {
 		return getName();
 	}
-	
 }
