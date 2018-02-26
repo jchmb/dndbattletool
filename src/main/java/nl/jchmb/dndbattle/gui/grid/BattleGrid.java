@@ -8,6 +8,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener.Change;
@@ -29,10 +30,13 @@ import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Entity;
 import nl.jchmb.dndbattle.core.Positionable;
+import nl.jchmb.dndbattle.core.Sizable;
 import nl.jchmb.dndbattle.core.Vector2;
+import nl.jchmb.dndbattle.core.overlays.Overlay;
 import nl.jchmb.dndbattle.gui.actors.ActorCell;
 import nl.jchmb.dndbattle.gui.actors.ActorEditor;
 import nl.jchmb.dndbattle.gui.entities.EntityCell;
+import nl.jchmb.dndbattle.gui.overlays.OverlayCell;
 import nl.jchmb.dndbattle.utils.BindingUtils;
 import nl.jchmb.dndbattle.utils.CRUDCell;
 import nl.jchmb.dndbattle.utils.Images;
@@ -44,6 +48,7 @@ public class BattleGrid extends Pane {
 	private final Canvas backgroundLayer = new Canvas();
 	private final Group actorLayer = new Group();
 	private final Group entityLayer = new Group();
+	private final Group overlayLayer = new Group();
 	private Node selectedAvatar = null;
 	private Vector2 originalMousePosition = new Vector2(0, 0);
 	private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
@@ -74,12 +79,14 @@ public class BattleGrid extends Pane {
 		rebuildBackground();
 		getChildren().addAll(
 			backgroundLayer,
+			entityLayer,
 			actorLayer,
-			entityLayer
+			overlayLayer
 		);
 		
 		battle.actorsProperty().addListener(this::onActorsListChanged);
 		battle.entitiesProperty().addListener(this::onEntityListChanged);
+		battle.overlaysProperty().addListener(this::onOverlayListChanged);
 		
 		battle.backgroundColorProperty().addListener(this::onGridColorChanged);
 		battle.borderColorProperty().addListener(this::onGridColorChanged);
@@ -97,8 +104,9 @@ public class BattleGrid extends Pane {
 	
 	private void onGridSizeChanged(ObservableValue<? extends Vector2> property, Vector2 oldValue, Vector2 newValue) {
 		rebuildBackground();
-		rebuildActors();
 		rebuildEntities();
+		rebuildActors();
+		rebuildOverlays();
 	}
 	
 	private void rebuildBackground() {
@@ -145,6 +153,15 @@ public class BattleGrid extends Pane {
 		rebuildEntities();
 	}
 	
+	private void onOverlayListChanged(Change<? extends Overlay> change) {
+		rebuildOverlays();
+	}
+	
+	private void rebuildOverlays() {
+		overlayLayer.getChildren().clear();
+		battle.overlaysProperty().forEach(overlay -> overlayLayer.getChildren().add(buildOverlay(overlay)));
+	}
+	
 	private void rebuildActors() {
 		actorLayer.getChildren().clear();
 		battle.actorsProperty().forEach(actor -> actorLayer.getChildren().add(buildActor(actor)));
@@ -159,7 +176,8 @@ public class BattleGrid extends Pane {
 	private Node buildEntity(Entity entity) {
 		BorderPane view = buildPositionable(
 			entity,
-			(p, b) -> EntityCell.createContextMenu((Entity) p, b)
+			(p, b) -> EntityCell.createContextMenu((Entity) p, b),
+			entity.avatarProperty()
 		);
 		return view;
 	}
@@ -167,7 +185,8 @@ public class BattleGrid extends Pane {
 	private Node buildActor(Actor actor) {
 		BorderPane view = buildPositionable(
 			actor,
-			(p, b) -> ActorCell.createContextMenu((Actor) p, b)
+			(p, b) -> ActorCell.createContextMenu((Actor) p, b),
+			actor.avatarProperty()
 		);
 		view.opacityProperty().bind(
 			BindingUtils.binding(
@@ -178,29 +197,61 @@ public class BattleGrid extends Pane {
 		return view;
 	}
 	
+	private Node buildOverlay(final Overlay overlay) {
+		BorderPane view = buildPositionable(
+			overlay,
+			(p, b) -> OverlayCell.createContextMenu((Overlay) p, b),
+			overlay.colorProperty(),
+			overlay.opacityProperty()
+		);
+		return view;
+	}
+	
 	private BorderPane buildPositionable(
 			Positionable positionable,
-			BiFunction<Positionable, Battle, ContextMenu> contextMenuFactory
+			BiFunction<Positionable, Battle, ContextMenu> contextMenuFactory,
+			Property<?>... imageProperties
 	) {
-		ImageView imageView = new ImageView();
-		BorderPane view = new BorderPane(imageView);
+		BorderPane view = new BorderPane();
 		IntegerProperty cellSizeProperty = battle.cellSizeProperty();
-		imageView.imageProperty().bind(
-			Bindings.createObjectBinding(
-				() -> {
-					int sizeX = cellSizeProperty.get() * positionable.getSize().getX();
-					int sizeY = cellSizeProperty.get() * positionable.getSize().getY();
-					return Images.load(
-						positionable.getAvatar(),
-						sizeX,
-						sizeY
-					).get();
-				},
-				positionable.avatarProperty(),
-				positionable.sizeProperty(),
-				cellSizeProperty.asObject()
-			)
-		);
+		if (positionable instanceof Sizable) {
+			view.centerProperty().bind(
+				new ObjectBinding<>() {
+					{
+						super.bind(
+							battle.cellSizeProperty(),
+							((Sizable) positionable).sizeProperty()
+						);
+						super.bind(
+							imageProperties	
+						);
+					}
+					@Override
+					protected Node computeValue() {
+						return positionable.getImageRepresentation(battle);
+					}
+					
+				}
+			);
+		} else {
+			view.centerProperty().bind(
+					new ObjectBinding<>() {
+						{
+							super.bind(
+								battle.cellSizeProperty()
+							);
+							super.bind(
+								imageProperties	
+							);
+						}
+						@Override
+						protected Node computeValue() {
+							return positionable.getImageRepresentation(battle);
+						}
+						
+					}
+				);
+		}
 		view.setUserData(positionable);
 		view.translateXProperty().bind(
 			BindingUtils.binding(

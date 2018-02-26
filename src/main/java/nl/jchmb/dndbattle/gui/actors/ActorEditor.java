@@ -43,12 +43,13 @@ import nl.jchmb.dndbattle.gui.statuses.StatusList;
 import nl.jchmb.dndbattle.utils.BindingUtils;
 import nl.jchmb.dndbattle.utils.form.Form;
 import nl.jchmb.dndbattle.utils.form.PopOverForm;
+import nl.jchmb.dndbattle.utils.form.TabbedForm;
 
 /**
  * @author jochem
  *
  */
-public class ActorEditor extends Form {
+public class ActorEditor extends TabbedForm {
 	private final Actor actor;
 	
 	public ActorEditor(final Actor actor, final Battle battle) {
@@ -56,53 +57,64 @@ public class ActorEditor extends Form {
 		
 		this.actor = actor;
 		
+		addFormTab("general", "General");
+		addFormTab("avatar", "Avatar");
+		addFormTab("stats", "Stats");
+		addFormTab("statuses", "Statuses");
+		
 		buildFields(battle);
 	}
 	
 	protected void buildFields(final Battle battle) {
 		/* Name */
-		addStringField(
+		getFormTab("general").addStringField(
 			actor.nameProperty(),
 			new TextField(),
 			"Name"
 		);
 		
 		/* Gender */
-		addComboBoxField(
+		getFormTab("general").addComboBoxField(
 			actor.genderProperty(),
 			battle.gendersProperty(),
 			"Gender"
 		);
 		
 		/* Initiative */
-		addIntegerField(
+		getFormTab("general").addIntegerField(
 			actor.initiativeProperty(),
 			new Spinner<Integer>(-20, Integer.MAX_VALUE, 1),
 			"Initiative"
 		);
 		
 		/* HP */
-		addIntegerField(
+		getFormTab("stats").addIntegerField(
 			actor.currentHpProperty(),
 			new Spinner<Integer>(-10, Integer.MAX_VALUE, 1),
 			"Current HP"
 		);
 		
 		/* Max HP */
-		addIntegerField(
+		getFormTab("stats").addIntegerField(
 			actor.maxHpProperty(),
 			new Spinner<Integer>(1, Integer.MAX_VALUE, 1),
 			"Max HP"
 		);
 		
 		/* Hide HP */
-		addBooleanField(
+		getFormTab("stats").addBooleanField(
 			actor.hiddenHpProperty(),
 			"Hide HP"
 		);
 		
+		/* Hide position */
+		getFormTab("general").addBooleanField(
+			actor.hiddenPositionProperty(),
+			"Hide position"
+		);
+		
 		/* Avatar */
-		addImageFileFieldWithDefault(
+		getFormTab("avatar").addImageFileFieldWithDefault(
 			actor.avatarProperty(),
 			new File("res/unknown.jpg"),
 			"(no image)",
@@ -111,7 +123,7 @@ public class ActorEditor extends Form {
 		);
 		
 		/* Size */
-		addVector2Field(
+		getFormTab("avatar").addVector2Field(
 			actor.sizeProperty(),
 			new Spinner<Integer>(1, 5, 1),
 			new Spinner<Integer>(1, 5, 1),
@@ -148,7 +160,7 @@ public class ActorEditor extends Form {
 //		bind(sheetField.textProperty(), actor.sheetProperty());
 		
 		statusesField.itemsProperty().bind(actor.statusesProperty());
-		addField(statusesContainer, "Statuses");
+		getFormTab("statuses").addField(statusesContainer, "Statuses");
 //		addField(test, "Test");
 		
 		

@@ -6,12 +6,16 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import nl.jchmb.dndbattle.utils.Images;
 
-public class Entity implements Positionable {
+public class Entity implements Positionable, Sizable {
 	private final StringProperty name = new SimpleStringProperty();
 	private final ObjectProperty<Vector2> size = new SimpleObjectProperty<>(new Vector2(1, 1));
 	private final ObjectProperty<File> avatar = new SimpleObjectProperty<>(new File("res/unknown.jpg"));
-	private final ObjectProperty<Vector2> position = new SimpleObjectProperty<>(new Vector2(1, 1));
+	private final ObjectProperty<Vector2> position = new SimpleObjectProperty<>(new Vector2(0, 0));
 	
 	public final StringProperty nameProperty() {
 		return this.name;
@@ -64,7 +68,26 @@ public class Entity implements Positionable {
 	public final void setAvatar(final File avatar) {
 		this.avatarProperty().set(avatar);
 	}
+
+	@Override
+	public Node getImageRepresentation(final Battle battle) {
+		ImageView imageView = new ImageView();
+		Image image = Images.load(
+			getAvatar(),
+			battle.getCellSize() * getSize().getX(),
+			battle.getCellSize() * getSize().getY()
+		).get();
+		imageView.setImage(image);
+		return imageView;
+	}
 	
-	
-	
+	public Entity duplicate() {
+		Entity duplicate = new Entity();
+		
+		duplicate.setName(getName());
+		duplicate.setAvatar(getAvatar());
+		duplicate.setSize(getSize());
+		
+		return duplicate;
+	}
 }

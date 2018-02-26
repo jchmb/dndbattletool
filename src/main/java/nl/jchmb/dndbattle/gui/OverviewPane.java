@@ -7,12 +7,14 @@ import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.gui.actors.ActorList;
 import nl.jchmb.dndbattle.gui.effects.EffectList;
 import nl.jchmb.dndbattle.gui.entities.EntityList;
+import nl.jchmb.dndbattle.gui.overlays.OverlayList;
 
 public class OverviewPane extends TabPane {
 	private final ObjectProperty<Battle> battle;
 	public final ActorList actorList;
 	public final EntityList entityList;
 	public final EffectList effectList;
+	public final OverlayList overlayList;
 	
 	public OverviewPane(final ObjectProperty<Battle> battle) {
 		super();
@@ -21,6 +23,7 @@ public class OverviewPane extends TabPane {
 		this.actorList = new ActorList(battle);
 		this.entityList = new EntityList(battle.get());
 		this.effectList = new EffectList(battle.get());
+		this.overlayList = new OverlayList(battle.get());
 		
 		Tab actorTab = new Tab("Actors");
 		actorTab.setClosable(false);
@@ -30,6 +33,10 @@ public class OverviewPane extends TabPane {
 		entityTab.setClosable(false);
 		entityTab.setContent(entityList);
 		
+		Tab overlayTab = new Tab("Overlays");
+		overlayTab.setClosable(true);
+		overlayTab.setContent(overlayList);
+		
 		Tab effectTab = new Tab("Events");
 		effectTab.setClosable(false);
 		effectTab.setContent(effectList);
@@ -37,7 +44,8 @@ public class OverviewPane extends TabPane {
 		getTabs().addAll(
 			actorTab,
 			entityTab,
-			effectTab
+			overlayTab
+//			effectTab
 		);
 	}
 }

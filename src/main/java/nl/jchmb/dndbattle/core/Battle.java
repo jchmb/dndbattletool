@@ -15,6 +15,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
+import nl.jchmb.dndbattle.core.overlays.Overlay;
 
 /**
  * @author jochem
@@ -38,6 +39,9 @@ public class Battle {
 		FXCollections.observableArrayList()
 	);
 	private final ListProperty<Entity> entities = new SimpleListProperty<>(
+		FXCollections.observableArrayList()
+	);
+	private final ListProperty<Overlay> overlays = new SimpleListProperty<>(
 		FXCollections.observableArrayList()
 	);
 	private final ListProperty<Round> rounds = new SimpleListProperty<>(
@@ -105,6 +109,7 @@ public class Battle {
 		getActors().clear();
 		getStatuses().clear();
 		getEntities().clear();
+		getOverlays().clear();
 		resetRounds();
 	}
 	
@@ -351,6 +356,21 @@ public class Battle {
 		rounds.add(nextRound);
 		return nextRound;
 	}
+
+	public final ListProperty<Overlay> overlaysProperty() {
+		return this.overlays;
+	}
+	
+
+	public final ObservableList<Overlay> getOverlays() {
+		return this.overlaysProperty().get();
+	}
+	
+
+	public final void setOverlays(final ObservableList<Overlay> overlays) {
+		this.overlaysProperty().set(overlays);
+	}
+	
 	
 	
 	

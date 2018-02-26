@@ -17,12 +17,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import nl.jchmb.dndbattle.utils.Images;
 
 /**
  * @author jochem
  *
  */
-public class Actor implements Positionable {
+public class Actor implements Positionable, Sizable {
 	private final StringProperty name = new SimpleStringProperty();
 	private final IntegerProperty initiative = new SimpleIntegerProperty();
 	private final ObjectProperty<File> avatar = new SimpleObjectProperty<>();
@@ -32,6 +36,7 @@ public class Actor implements Positionable {
 	private final ObjectProperty<Vector2> position = new SimpleObjectProperty<Vector2>();
 	private final ObjectProperty<Vector2> size = new SimpleObjectProperty<Vector2>(new Vector2(1, 1));
 	private final BooleanProperty hiddenHp = new SimpleBooleanProperty(false);
+	private final BooleanProperty hiddenPosition = new SimpleBooleanProperty(false);
 	private final ListProperty<Status> statuses = new SimpleListProperty<>(
 		FXCollections.observableArrayList()
 	);
@@ -185,10 +190,12 @@ public class Actor implements Positionable {
 		Actor duplicate = new Actor();
 		
 		duplicate.setName(getName());
+		duplicate.setGender(getGender());
 		duplicate.setInitiative(getInitiative());
 		duplicate.setCurrentHp(getCurrentHp());
 		duplicate.setMaxHp(getMaxHp());
 		duplicate.setHiddenHp(isHiddenHp());
+		duplicate.setHiddenPosition(isHiddenPosition());
 		duplicate.setStatuses(FXCollections.observableArrayList(getStatuses()));
 		duplicate.setSize(getSize());
 		duplicate.setAvatar(getAvatar());
@@ -270,4 +277,31 @@ public class Actor implements Positionable {
 	public String toString() {
 		return getName();
 	}
+
+	@Override
+	public Node getImageRepresentation(final Battle battle) {
+		final ImageView imageView = new ImageView();
+		final Image image = Images.load(
+			getAvatar(),
+			battle.getCellSize() * getSize().getX(),
+			battle.getCellSize() * getSize().getY()
+		).get();
+		imageView.setImage(image);
+		return imageView;
+	}
+
+	public final BooleanProperty hiddenPositionProperty() {
+		return this.hiddenPosition;
+	}
+	
+
+	public final boolean isHiddenPosition() {
+		return this.hiddenPositionProperty().get();
+	}
+	
+
+	public final void setHiddenPosition(final boolean hiddenPosition) {
+		this.hiddenPositionProperty().set(hiddenPosition);
+	}
+	
 }

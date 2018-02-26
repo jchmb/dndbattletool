@@ -23,6 +23,7 @@ import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Entity;
 import nl.jchmb.dndbattle.core.Round;
 import nl.jchmb.dndbattle.core.Status;
+import nl.jchmb.dndbattle.core.overlays.Overlay;
 import nl.jchmb.dndbattle.gui.options.GridOptions;
 import nl.jchmb.dndbattle.gui.options.LegendOptions;
 import nl.jchmb.dndbattle.gui.options.StatusOptions;
@@ -44,7 +45,8 @@ public class EditMenu extends Menu {
 		getItems().addAll(
 			getAddActorItem(),
 			getAddEntityItem(),
-			getAddRoundItem()
+			getAddOverlayItem()
+//			getAddRoundItem()
 //			getAddTilesetItem()
 		);
 	}
@@ -76,6 +78,22 @@ public class EditMenu extends Menu {
 		item.setAccelerator(
 			new KeyCodeCombination(
 				KeyCode.J,
+				KeyCombination.CONTROL_DOWN
+			)
+		);
+		return item;
+	}
+	
+	private final MenuItem getAddOverlayItem() {
+		final MenuItem item = new MenuItem("Add overlay");
+		item.setOnAction(event -> {
+			Overlay overlay = new Overlay();
+			overlay.setName("New overlay");
+			battle.get().overlaysProperty().add(overlay);
+		});
+		item.setAccelerator(
+			new KeyCodeCombination(
+				KeyCode.V,
 				KeyCombination.CONTROL_DOWN
 			)
 		);

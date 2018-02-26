@@ -16,6 +16,7 @@ import nl.jchmb.dndbattle.core.Entity;
 import nl.jchmb.dndbattle.core.Gender;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.core.Vector2;
+import nl.jchmb.dndbattle.core.overlays.Overlay;
 
 public class BattleJsonReader {
 	public void read(Battle battle, File file) {
@@ -36,6 +37,13 @@ public class BattleJsonReader {
 				battle.gendersProperty().clear();
 				for (Object o : genderArray) {
 					readGender(battle, (JSONObject) o);
+				}
+			}
+			if (data.containsKey("overlays")) {
+				JSONArray overlayArray = (JSONArray) data.get("overlays");
+				battle.overlaysProperty().clear();
+				for (Object o : overlayArray) {
+					readOverlay(battle, (JSONObject) o);
 				}
 			}
 			if (data.containsKey("options")) {
@@ -143,6 +151,9 @@ public class BattleJsonReader {
 		if (o.containsKey("gender")) {
 			actor.setGender(battle.findGenderById(toInt(o, "gender")));
 		}
+		if (o.containsKey("hide_position")) {
+			actor.setHiddenPosition((Boolean) o.get("hide_position"));
+		}
 		actor.setInitiative(toInt(o, "initiative"));
 		actor.setCurrentHp(toInt(o, "current_hp"));
 		actor.setMaxHp(toInt(o, "max_hp"));
@@ -172,5 +183,17 @@ public class BattleJsonReader {
 		entity.setSize(readVector2((JSONObject) o.get("size")));
 		
 		battle.getEntities().add(entity);
+	}
+	
+	private void readOverlay(Battle battle, JSONObject o) {
+		Overlay overlay = new Overlay();
+		
+		overlay.setName((String) o.get("overlay"));
+		overlay.setPosition(readVector2((JSONObject) o.get("position")));
+		overlay.setSize(readVector2((JSONObject) o.get("size")));
+		overlay.setColor(readColor((JSONObject) o.get("color")));
+		overlay.setOpacity((Double) o.get("opacity"));
+		
+		battle.getOverlays().add(overlay);
 	}
 }

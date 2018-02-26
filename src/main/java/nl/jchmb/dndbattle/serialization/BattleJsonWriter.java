@@ -15,6 +15,7 @@ import nl.jchmb.dndbattle.core.Entity;
 import nl.jchmb.dndbattle.core.Gender;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.core.Vector2;
+import nl.jchmb.dndbattle.core.overlays.Overlay;
 
 public class BattleJsonWriter {
 	@SuppressWarnings("unchecked")
@@ -29,6 +30,10 @@ public class BattleJsonWriter {
 		for (Entity entity : battle.getEntities()) {
 			serializeEntity(entityArray, entity);
 		}
+		JSONArray overlayArray = new JSONArray();
+		for (Overlay overlay : battle.getOverlays()) {
+			serializeOverlay(overlayArray, overlay);
+		}
 		JSONArray statusArray = new JSONArray();
 		for (Status status : battle.getStatuses()) {
 			serializeStatus(statusArray, status);
@@ -39,6 +44,7 @@ public class BattleJsonWriter {
 		}
 		root.put("actors", actorArray); // TODO fix warning
 		root.put("statuses", statusArray);
+		root.put("overlays", overlayArray);
 		root.put("entities", entityArray);
 		root.put("genders", genderArray);
 		root.put("options", serializeOptionsObject(battle));
@@ -96,6 +102,19 @@ public class BattleJsonWriter {
 	}
 	
 	@SuppressWarnings("unchecked")
+	private void serializeOverlay(JSONArray overlayArray, Overlay overlay) {
+		JSONObject o = new JSONObject();
+		
+		o.put("name", overlay.getName());
+		o.put("position", serializeVector2(overlay.getPosition()));
+		o.put("size", serializeVector2(overlay.getSize()));
+		o.put("color", serializeColor(overlay.getColor()));
+		o.put("opacity", overlay.getOpacity());
+		
+		overlayArray.add(o);
+	}
+	
+	@SuppressWarnings("unchecked")
 	private void serializeActor(JSONArray actorArray, Actor actor) {
 		JSONObject o = new JSONObject();
 		
@@ -109,6 +128,7 @@ public class BattleJsonWriter {
 		o.put("y", actor.getPosition().getY());
 		o.put("size", serializeVector2(actor.getSize()));
 		o.put("hide_hp", actor.isHiddenHp());
+		o.put("hide_position", actor.isHiddenPosition());
 		o.put("statuses", statusesToJsonArray(actor));
 		
 		actorArray.add(o);

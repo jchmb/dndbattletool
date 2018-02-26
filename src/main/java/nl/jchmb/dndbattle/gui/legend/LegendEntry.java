@@ -148,10 +148,20 @@ public class LegendEntry extends Pane {
 				position -> position.add(new Vector2(1, 1)).toString()
 			)
 		);
-		positionView.translateXProperty().bind(Bindings.add(10.0f + HEALTH_BAR_WIDTH, battle.legendEntryHeightProperty()));
+		positionView.translateXProperty().bind(
+			Bindings.add(
+				10.0f + HEALTH_BAR_WIDTH,
+				battle.legendEntryHeightProperty()
+			)
+		);
 		positionView.setTranslateY(30.0f);
 		positionView.textFillProperty().bind(battle.legendEntryFontColorProperty());
 		positionView.setFont(new Font("Verdana", 12.0d));
+		positionView.visibleProperty().bind(
+			Bindings.not(
+				actor.hiddenPositionProperty()
+			)
+		);
 		
 		/* Statuses view */
 		statusesView = new HBox();

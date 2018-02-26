@@ -60,6 +60,24 @@ public class EntityCell extends CRUDCell<Entity> {
 		return new EntityEditor(entity);
 	}
 	
+	private final MenuItem getDuplicateItem(Entity entity) {
+		final MenuItem item = new MenuItem("Duplicate");
+		item.setOnAction(event -> {
+			final Entity duplicate = entity.duplicate();
+			battle.entitiesProperty().add(duplicate);
+		});
+		return item;
+	}
+	
+	@Override
+	protected void buildContextMenu(ContextMenu contextMenu, Entity entity) {
+		contextMenu.getItems().addAll(
+			getEditItem(entity),
+			getDuplicateItem(entity),
+			getDeleteItem(entity)
+		);
+	}
+	
 	public static ContextMenu createContextMenu(final Entity entity, final Battle battle) {
 		return new EntityCell(battle, battle.entitiesProperty(), Entity::nameProperty)
 			.produceContextMenu(entity);

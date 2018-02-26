@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
@@ -56,7 +58,7 @@ public class Form extends GridPane {
 		++rowIndex;
 	}
 	
-	protected void addVector2Field(
+	public void addVector2Field(
 			final ObjectProperty<Vector2> property,
 			final Spinner<Integer> spinnerX,
 			final Spinner<Integer> spinnerY,
@@ -77,7 +79,7 @@ public class Form extends GridPane {
 				}
 
 				@Override
-				protected Vector2 computeValue() {
+				public Vector2 computeValue() {
 					return new Vector2(
 						spinnerX.getValue(),
 						spinnerY.getValue()
@@ -90,7 +92,7 @@ public class Form extends GridPane {
 		addField(spinnerY, labelY);
 	}
 	
-	protected void addIntegerField(
+	public void addIntegerField(
 		final IntegerProperty property,
 		final Spinner<Integer> spinner,
 		final String label
@@ -100,7 +102,17 @@ public class Form extends GridPane {
 		addField(spinner, label);
 	}
 	
-	protected void addBooleanField(
+	public void addDoubleField(
+		final DoubleProperty property,
+		final Spinner<Double> spinner,
+		final String label
+	) {
+		bindStrongly(property.asObject(), spinner.getValueFactory().valueProperty());
+		spinner.setEditable(true);
+		addField(spinner, label);
+	}
+	
+	public void addBooleanField(
 		final BooleanProperty property,
 		final String label
 	) {
@@ -110,7 +122,7 @@ public class Form extends GridPane {
 		addField(box, label);
 	}
 	
-	protected void addStringField(
+	public void addStringField(
 		final StringProperty property,
 		final TextField field,
 		final String label
@@ -119,7 +131,7 @@ public class Form extends GridPane {
 		addField(field, label);
 	}
 	
-	protected void addColorField(
+	public void addColorField(
 		final ObjectProperty<Color> property,
 		final ColorPicker colorField,
 		final String label
@@ -130,7 +142,7 @@ public class Form extends GridPane {
 		addField(colorField, label);
 	}
 	
-	protected void addFileFieldWithDefault(
+	public void addFileFieldWithDefault(
 		final ObjectProperty<File> property,
 		final Supplier<FileChooser> chooserSupplier,
 		final File defaultFile,
@@ -167,7 +179,7 @@ public class Form extends GridPane {
 		addField(containerField, label);
 	}
 	
-	protected void addOptionalFileField(
+	public void addOptionalFileField(
 			final ObjectProperty<File> property,
 			final Supplier<FileChooser> chooserSupplier,
 			final Consumer<File> fileSelectedConsumer,
@@ -199,7 +211,7 @@ public class Form extends GridPane {
 		Settings.INSTANCE.setImageDirectory(file.getParentFile());
 	}
 	
-	protected void addOptionalImageFileField(
+	public void addOptionalImageFileField(
 		final ObjectProperty<File> property,
 		final String label
 	) {
@@ -212,7 +224,7 @@ public class Form extends GridPane {
 		);
 	}
 	
-	protected void addImageFileFieldWithDefault(
+	public void addImageFileFieldWithDefault(
 			final ObjectProperty<File> property,
 			final File defaultFile,
 			final String defaultText,
@@ -230,7 +242,7 @@ public class Form extends GridPane {
 		);
 	}
 	
-	protected <T> void addComboBoxField(
+	public <T> void addComboBoxField(
 			final ObjectProperty<T> property,
 			final ListProperty<T> sourceProperty,
 			final String label
@@ -241,7 +253,7 @@ public class Form extends GridPane {
 		addField(comboBox, label);
 	}
 	
-	protected final <T> void bindStrongly(final Property<T> modelProperty, final Property<T> fieldProperty) {
+	public final <T> void bindStrongly(final Property<T> modelProperty, final Property<T> fieldProperty) {
 		fieldProperty.setValue(modelProperty.getValue());
 		modelProperty.bind(fieldProperty);
 		properties.add(modelProperty);
