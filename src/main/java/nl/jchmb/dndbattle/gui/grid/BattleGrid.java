@@ -188,8 +188,8 @@ public class BattleGrid extends Pane {
 		imageView.imageProperty().bind(
 			Bindings.createObjectBinding(
 				() -> {
-					int sizeX = cellSizeProperty.get() * positionable.getSize().getX() - 2;
-					int sizeY = cellSizeProperty.get() * positionable.getSize().getY() - 2;
+					int sizeX = cellSizeProperty.get() * positionable.getSize().getX();
+					int sizeY = cellSizeProperty.get() * positionable.getSize().getY();
 					return Images.load(
 						positionable.getAvatar(),
 						sizeX,
@@ -201,7 +201,6 @@ public class BattleGrid extends Pane {
 				cellSizeProperty.asObject()
 			)
 		);
-		view.getStyleClass().add("image-view-wrapper");
 		view.setUserData(positionable);
 		view.translateXProperty().bind(
 			BindingUtils.binding(

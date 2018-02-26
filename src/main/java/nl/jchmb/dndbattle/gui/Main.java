@@ -4,10 +4,12 @@
 package nl.jchmb.dndbattle.gui;
 
 import java.io.File;
+import java.util.stream.Stream;
 
 import javafx.application.Application;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -19,6 +21,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.core.Settings;
 import nl.jchmb.dndbattle.gui.actors.ActorList;
 import nl.jchmb.dndbattle.gui.grid.BattleGrid;
 import nl.jchmb.dndbattle.gui.legend.LegendPane;
@@ -26,6 +29,8 @@ import nl.jchmb.dndbattle.gui.menu.EditMenu;
 import nl.jchmb.dndbattle.gui.menu.FileMenu;
 import nl.jchmb.dndbattle.gui.menu.OptionsMenu;
 import nl.jchmb.dndbattle.gui.menu.UploadMenu;
+import nl.jchmb.dndbattle.serialization.SettingsReader;
+import nl.jchmb.dndbattle.serialization.SettingsWriter;
 import nl.jchmb.dndbattle.utils.BindingUtils;
 
 /**
@@ -33,13 +38,21 @@ import nl.jchmb.dndbattle.utils.BindingUtils;
  *
  */
 public class Main extends Application {
-	private static final String VERSION = "0.4";
+	private static final String VERSION = "0.5";
 	
+	private static final File SETTINGS_FILE = new File("settings.conf");
+	private static final SettingsReader SETTINGS_READER = new SettingsReader();
+	private static final SettingsWriter SETTINGS_WRITER = new SettingsWriter();
+	
+	private final ObjectProperty<Settings> settings = new SimpleObjectProperty<>(Settings.INSTANCE);
 	private final ObjectProperty<Battle> battle = new SimpleObjectProperty<>(new Battle());
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			/* Settings initialization */
+			initializeSettings();
+			
 			/* Initialize stuff */
 			battle.get().reset();
 			BorderPane root = new BorderPane();
@@ -67,10 +80,29 @@ public class Main extends Application {
 		}
 	}
 	
+	private void initializeSettings() {
+		final Settings settings = this.settings.get();
+		if (!SETTINGS_FILE.exists()) {
+			SETTINGS_WRITER.write(settings, SETTINGS_FILE);
+		} else {
+			SETTINGS_READER.read(settings, SETTINGS_FILE);
+		}
+		Stream<? extends Property<?>> properties = Stream.of(
+			settings.battleDirectoryProperty(),
+			settings.imageDirectoryProperty(),
+			settings.exportDirectoryProperty()
+		);
+		properties.forEach(
+			property -> property.addListener(
+				(prop, oldValue, newValue) -> SETTINGS_WRITER.write(settings, SETTINGS_FILE)
+			)
+		);
+	}
+	
 	private MenuBar getMenuBar(BorderPane root, final Stage window) {
 		MenuBar menuBar = new MenuBar();
 		menuBar.getMenus().addAll(
-			new FileMenu(battle, root),
+			new FileMenu(battle, settings.get(), root),
 			new EditMenu(battle, root, window),
 			new OptionsMenu(battle.get(), root),
 			new UploadMenu(root)

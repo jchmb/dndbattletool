@@ -21,6 +21,7 @@ import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Avatar;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Entity;
+import nl.jchmb.dndbattle.core.Round;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.gui.options.GridOptions;
 import nl.jchmb.dndbattle.gui.options.LegendOptions;
@@ -42,7 +43,8 @@ public class EditMenu extends Menu {
 		
 		getItems().addAll(
 			getAddActorItem(),
-			getAddEntityItem()
+			getAddEntityItem(),
+			getAddRoundItem()
 //			getAddTilesetItem()
 		);
 	}
@@ -74,6 +76,21 @@ public class EditMenu extends Menu {
 		item.setAccelerator(
 			new KeyCodeCombination(
 				KeyCode.J,
+				KeyCombination.CONTROL_DOWN
+			)
+		);
+		return item;
+	}
+	
+	private final MenuItem getAddRoundItem() {
+		MenuItem item = new MenuItem("Add round");
+		item.setOnAction(event -> {
+			Round round = new Round();
+			
+		});
+		item.setAccelerator(
+			new KeyCodeCombination(
+				KeyCode.R,
 				KeyCombination.CONTROL_DOWN
 			)
 		);

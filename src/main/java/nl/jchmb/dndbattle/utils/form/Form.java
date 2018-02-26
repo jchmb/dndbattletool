@@ -3,6 +3,7 @@ package nl.jchmb.dndbattle.utils.form;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javafx.beans.binding.ObjectBinding;
@@ -28,6 +29,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import nl.jchmb.dndbattle.core.Settings;
 import nl.jchmb.dndbattle.core.Vector2;
 
 public class Form extends GridPane {
@@ -132,6 +134,7 @@ public class Form extends GridPane {
 		final ObjectProperty<File> property,
 		final Supplier<FileChooser> chooserSupplier,
 		final File defaultFile,
+		final Consumer<File> fileSelectedConsumer,
 		final String defaultText,
 		final String resetButtonText,
 		final String label
@@ -143,6 +146,7 @@ public class Form extends GridPane {
 			if (file != null) {
 				property.set(file);
 				button.setText(property.get().getName());
+				fileSelectedConsumer.accept(file);
 			}
 		});
 		if (property.get() == null) {
@@ -166,6 +170,7 @@ public class Form extends GridPane {
 	protected void addOptionalFileField(
 			final ObjectProperty<File> property,
 			final Supplier<FileChooser> chooserSupplier,
+			final Consumer<File> fileSelectedConsumer,
 			final String missingText,
 			final String label
 	) {
@@ -173,6 +178,7 @@ public class Form extends GridPane {
 			property,
 			chooserSupplier,
 			null,
+			fileSelectedConsumer,
 			missingText,
 			"[X]",
 			label
@@ -181,11 +187,16 @@ public class Form extends GridPane {
 	
 	private final FileChooser getImageChooser() {
 		final FileChooser chooser = new FileChooser();
+		chooser.setInitialDirectory(Settings.INSTANCE.getImageDirectory());
 		chooser.setTitle("Choose an image file");
 		chooser.getExtensionFilters().add(
 			new ExtensionFilter("Image file", "*.jpg", "*.png")
 		);
 		return chooser;
+	}
+	
+	private void setImageDirectory(final File file) {
+		Settings.INSTANCE.setImageDirectory(file.getParentFile());
 	}
 	
 	protected void addOptionalImageFileField(
@@ -195,6 +206,7 @@ public class Form extends GridPane {
 		addOptionalFileField(
 			property,
 			this::getImageChooser,
+			this::setImageDirectory,
 			"(no image)",
 			label
 		);
@@ -211,6 +223,7 @@ public class Form extends GridPane {
 			property,
 			this::getImageChooser,
 			defaultFile,
+			this::setImageDirectory,
 			defaultText,
 			resetText,
 			label

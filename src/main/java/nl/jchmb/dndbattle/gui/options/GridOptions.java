@@ -25,7 +25,7 @@ public class GridOptions extends Form {
 	}
 	
 	private void buildFields() {
-		Spinner<Integer> cellSizeField = new Spinner<Integer>(16, 96, 1);
+		Spinner<Integer> cellSizeField = new Spinner<Integer>(12, 96, 1);
 		addIntegerField(
 			battle.cellSizeProperty(),
 			cellSizeField,
@@ -34,8 +34,8 @@ public class GridOptions extends Form {
 		
 		addVector2Field(
 			battle.gridSizeProperty(),
-			new Spinner<Integer>(2, 20, 1),
-			new Spinner<Integer>(2, 20, 1),
+			new Spinner<Integer>(2, 40, 1),
+			new Spinner<Integer>(2, 40, 1),
 			"Width",
 			"Height"
 		);

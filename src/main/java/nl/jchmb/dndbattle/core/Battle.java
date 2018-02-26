@@ -4,6 +4,7 @@
 package nl.jchmb.dndbattle.core;
 
 import java.io.File;
+import java.util.Comparator;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
@@ -37,6 +38,9 @@ public class Battle {
 		FXCollections.observableArrayList()
 	);
 	private final ListProperty<Entity> entities = new SimpleListProperty<>(
+		FXCollections.observableArrayList()
+	);
+	private final ListProperty<Round> rounds = new SimpleListProperty<>(
 		FXCollections.observableArrayList()
 	);
 	private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<>(Color.WHITE);
@@ -92,7 +96,7 @@ public class Battle {
 		setCellSize(50);
 		setBackgroundColor(Color.WHITE);
 		setBorderColor(Color.GRAY);
-		setLegendEntryHeight(50);
+		setLegendEntryHeight(48);
 		setLegendEntryEvenColor(Color.WHITE);
 		setLegendEntryOddColor(new Color(0.95f, 0.95f, 0.95f, 1.0f));
 		setLegendEntryFontColor(Color.BLACK);
@@ -100,6 +104,8 @@ public class Battle {
 		resetGenders();
 		getActors().clear();
 		getStatuses().clear();
+		getEntities().clear();
+		resetRounds();
 	}
 	
 	private void resetGenders() {
@@ -108,6 +114,15 @@ public class Battle {
 			Gender.MALE,
 			Gender.FEMALE,
 			Gender.OTHER
+		);
+	}
+	
+	private void resetRounds() {
+		rounds.clear();
+		Round firstRound = new Round();
+		firstRound.setNumber(1);
+		rounds.addAll(
+			firstRound
 		);
 	}
 
@@ -310,7 +325,32 @@ public class Battle {
 	public final void setEntities(final ObservableList<Entity> entities) {
 		this.entitiesProperty().set(entities);
 	}
+
+	public final ListProperty<Round> roundsProperty() {
+		return this.rounds;
+	}
 	
+
+	public final ObservableList<Round> getRounds() {
+		return this.roundsProperty().get();
+	}
+	
+
+	public final void setRounds(final ObservableList<Round> rounds) {
+		this.roundsProperty().set(rounds);
+	}
+	
+	public final Round nextRound() {
+		Round nextRound = new Round();
+		nextRound.setNumber(
+			rounds.stream()
+				.max(Comparator.comparingInt(Round::getNumber))
+				.map(Round::getNumber)
+				.orElse(1)
+		);
+		rounds.add(nextRound);
+		return nextRound;
+	}
 	
 	
 	

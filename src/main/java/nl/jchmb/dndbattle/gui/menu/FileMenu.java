@@ -23,6 +23,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.core.Settings;
 import nl.jchmb.dndbattle.serialization.BattleJsonReader;
 import nl.jchmb.dndbattle.serialization.BattleJsonWriter;
 import nl.jchmb.dndbattle.utils.Images;
@@ -33,10 +34,16 @@ import nl.jchmb.dndbattle.utils.Images;
  */
 public class FileMenu extends Menu {
 	private final ObjectProperty<Battle> battle;
+	private final Settings settings;
 	
-	public FileMenu(final ObjectProperty<Battle> battle, BorderPane root) {
+	public FileMenu(
+			final ObjectProperty<Battle> battle,
+			final Settings settings,
+			BorderPane root
+	) {
 		super("File");
 		this.battle = battle;
+		this.settings = settings;
 		
 		getItems().addAll(
 			getNewItem(),
@@ -67,12 +74,14 @@ public class FileMenu extends Menu {
 		MenuItem item = new MenuItem("Open battle");
 		item.setOnAction(event -> {
 			FileChooser chooser = new FileChooser();
+			chooser.setInitialDirectory(settings.getBattleDirectory());
 			chooser.setTitle("Open battle");
 			File file = chooser.showOpenDialog(null);
 			if (file != null) {
 				BattleJsonReader reader = new BattleJsonReader();
 				reader.read(battle.get(), file);
 				battle.get().setFile(file);
+				settings.setBattleDirectory(file.getParentFile());
 			}
 		});
 		item.setAccelerator(
@@ -106,6 +115,7 @@ public class FileMenu extends Menu {
 	private void saveAsAction() {
 		BattleJsonWriter writer = new BattleJsonWriter();
 		FileChooser chooser = new FileChooser();
+		chooser.setInitialDirectory(settings.getBattleDirectory());
 		chooser.setTitle("Save battle as...");
 		chooser.getExtensionFilters().add(
 			new ExtensionFilter("Battle file", "*.battle")
@@ -114,6 +124,7 @@ public class FileMenu extends Menu {
 		if (file != null) {
 			writer.write(battle.get(), file);
 			battle.get().setFile(file);
+			settings.setBattleDirectory(file.getParentFile());
 		}
 	}
 	
@@ -136,6 +147,7 @@ public class FileMenu extends Menu {
 		MenuItem item = new MenuItem("Export battle as...");
 		item.setOnAction(event -> {
 			FileChooser chooser = new FileChooser();
+			chooser.setInitialDirectory(settings.getExportDirectory());
 			chooser.setTitle("Export battle");
 			chooser.getExtensionFilters().add(
 				new ExtensionFilter("Image file", "*.png", "*.jpg")
@@ -143,6 +155,7 @@ public class FileMenu extends Menu {
 			File file = chooser.showSaveDialog(null);
 			if (file != null) {
 				Images.save(file, root);
+				settings.setExportDirectory(file.getParentFile());
 			}
 		});
 		item.setAccelerator(
