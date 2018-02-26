@@ -21,7 +21,6 @@ public class GridOptions extends Form {
 		super();
 		
 		this.battle = battle;
-//		setPrefWidth(800.0f);
 		buildFields();
 	}
 	

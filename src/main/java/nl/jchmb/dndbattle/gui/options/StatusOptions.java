@@ -13,12 +13,12 @@ import nl.jchmb.dndbattle.gui.statuses.StatusList;
 
 public class StatusOptions extends BorderPane {
 	private final Battle battle;
-	public StatusOptions(final Battle battle, final Stage window) {
+	public StatusOptions(final Battle battle) {
 		super();
 		
 		this.battle = battle;
 		setPrefSize(175, 400);
-		final StatusList list = new StatusList(battle.statusesProperty(), window, true);
+		final StatusList list = new StatusList(battle.statusesProperty(), true);
 		final Pane emptyPane = new Pane();
 //		emptyPane.setPrefSize(600, 400);
 		

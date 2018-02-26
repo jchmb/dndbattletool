@@ -33,6 +33,12 @@ public class Battle {
 	private final ListProperty<Tile> tiles = new SimpleListProperty<>(
 		FXCollections.observableArrayList()	
 	);
+	private final ListProperty<Gender> genders = new SimpleListProperty<>(
+		FXCollections.observableArrayList()
+	);
+	private final ListProperty<Entity> entities = new SimpleListProperty<>(
+		FXCollections.observableArrayList()
+	);
 	private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<>(Color.WHITE);
 	private final ObjectProperty<Color> borderColor = new SimpleObjectProperty<>(Color.GRAY);
 	private final IntegerProperty legendColumns = new SimpleIntegerProperty(1);
@@ -91,8 +97,18 @@ public class Battle {
 		setLegendEntryOddColor(new Color(0.95f, 0.95f, 0.95f, 1.0f));
 		setLegendEntryFontColor(Color.BLACK);
 		setBackgroundImageFile(null);
+		resetGenders();
 		getActors().clear();
 		getStatuses().clear();
+	}
+	
+	private void resetGenders() {
+		genders.clear();
+		genders.addAll(
+			Gender.MALE,
+			Gender.FEMALE,
+			Gender.OTHER
+		);
 	}
 
 	public final ListProperty<Status> statusesProperty() {
@@ -259,7 +275,41 @@ public class Battle {
 	public final void setLegendEntryHeight(final int legendEntryHeight) {
 		this.legendEntryHeightProperty().set(legendEntryHeight);
 	}
+
+	public final ListProperty<Gender> gendersProperty() {
+		return this.genders;
+	}
 	
+
+	public final ObservableList<Gender> getGenders() {
+		return this.gendersProperty().get();
+	}
+	
+
+	public final void setGenders(final ObservableList<Gender> genders) {
+		this.gendersProperty().set(genders);
+	}
+	
+	public final Gender findGenderById(final int id) {
+		return genders.stream()
+			.filter(gender -> gender.getId() == id)
+			.findFirst()
+			.orElse(Gender.OTHER);
+	}
+
+	public final ListProperty<Entity> entitiesProperty() {
+		return this.entities;
+	}
+	
+
+	public final ObservableList<Entity> getEntities() {
+		return this.entitiesProperty().get();
+	}
+	
+
+	public final void setEntities(final ObservableList<Entity> entities) {
+		this.entitiesProperty().set(entities);
+	}
 	
 	
 	

@@ -4,6 +4,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import nl.jchmb.dndbattle.utils.form.Form;
 
 public class Popups {
 	public static Stage create(final Parent content, final Stage root, final String title) {
@@ -18,5 +20,17 @@ public class Popups {
 	
 	public static void show(final Parent content, final Stage root, final String title) {
 		create(content, root, title).show();
+	}
+	
+	public static void show(final Parent content, final String title) {
+		show(content, (Stage) Window.getWindows().get(0), title);
+	}
+	
+	public static void showForm(final Form form, final String title) {
+		Stage stage = create(form, (Stage) Window.getWindows().get(0), title);
+		stage.setOnCloseRequest(event -> {
+			form.close();
+		});
+		stage.show();
 	}
 }

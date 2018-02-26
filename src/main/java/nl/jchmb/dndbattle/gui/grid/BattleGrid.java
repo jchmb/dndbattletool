@@ -1,5 +1,9 @@
 package nl.jchmb.dndbattle.gui.grid;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
@@ -7,10 +11,12 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener.Change;
+import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -21,16 +27,23 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.core.Entity;
+import nl.jchmb.dndbattle.core.Positionable;
 import nl.jchmb.dndbattle.core.Vector2;
+import nl.jchmb.dndbattle.gui.actors.ActorCell;
 import nl.jchmb.dndbattle.gui.actors.ActorEditor;
+import nl.jchmb.dndbattle.gui.entities.EntityCell;
 import nl.jchmb.dndbattle.utils.BindingUtils;
+import nl.jchmb.dndbattle.utils.CRUDCell;
 import nl.jchmb.dndbattle.utils.Images;
+import nl.jchmb.dndbattle.utils.Popups;
 
 public class BattleGrid extends Pane {
 	private final Battle battle;
 	private final ObjectProperty<Vector2> gridSize = new SimpleObjectProperty<Vector2>();
 	private final Canvas backgroundLayer = new Canvas();
 	private final Group actorLayer = new Group();
+	private final Group entityLayer = new Group();
 	private Node selectedAvatar = null;
 	private Vector2 originalMousePosition = new Vector2(0, 0);
 	private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
@@ -61,10 +74,12 @@ public class BattleGrid extends Pane {
 		rebuildBackground();
 		getChildren().addAll(
 			backgroundLayer,
-			actorLayer
+			actorLayer,
+			entityLayer
 		);
 		
 		battle.actorsProperty().addListener(this::onActorsListChanged);
+		battle.entitiesProperty().addListener(this::onEntityListChanged);
 		
 		battle.backgroundColorProperty().addListener(this::onGridColorChanged);
 		battle.borderColorProperty().addListener(this::onGridColorChanged);
@@ -83,6 +98,7 @@ public class BattleGrid extends Pane {
 	private void onGridSizeChanged(ObservableValue<? extends Vector2> property, Vector2 oldValue, Vector2 newValue) {
 		rebuildBackground();
 		rebuildActors();
+		rebuildEntities();
 	}
 	
 	private void rebuildBackground() {
@@ -125,51 +141,78 @@ public class BattleGrid extends Pane {
 		rebuildActors();
 	}
 	
+	private void onEntityListChanged(Change<? extends Entity> change) {
+		rebuildEntities();
+	}
+	
 	private void rebuildActors() {
 		actorLayer.getChildren().clear();
 		battle.actorsProperty().forEach(actor -> actorLayer.getChildren().add(buildActor(actor)));
 		// TODO: clean old
 	}
 	
+	private void rebuildEntities() {
+		entityLayer.getChildren().clear();
+		battle.entitiesProperty().forEach(entity -> entityLayer.getChildren().add(buildEntity(entity)));
+	}
+	
+	private Node buildEntity(Entity entity) {
+		BorderPane view = buildPositionable(
+			entity,
+			(p, b) -> EntityCell.createContextMenu((Entity) p, b)
+		);
+		return view;
+	}
+	
 	private Node buildActor(Actor actor) {
+		BorderPane view = buildPositionable(
+			actor,
+			(p, b) -> ActorCell.createContextMenu((Actor) p, b)
+		);
+		view.opacityProperty().bind(
+			BindingUtils.binding(
+				actor.currentHpProperty().asObject(),
+				currentHp -> currentHp < 0 ? 0.3d : 1.0d
+			)
+		);
+		return view;
+	}
+	
+	private BorderPane buildPositionable(
+			Positionable positionable,
+			BiFunction<Positionable, Battle, ContextMenu> contextMenuFactory
+	) {
 		ImageView imageView = new ImageView();
 		BorderPane view = new BorderPane(imageView);
 		IntegerProperty cellSizeProperty = battle.cellSizeProperty();
 		imageView.imageProperty().bind(
-//			BindingUtils.binding(
-//				actor.avatarProperty(),
-//				cellSizeProperty.asObject(),
-//				// TODO: correcting size for border so it fits on the grid... remove hardcoded part eventually
-//				// Moved to somewhere else
-//				(file, cellSize) -> Images.load(file, cellSize - 2, cellSize - 2).get()
-//			)
 			Bindings.createObjectBinding(
 				() -> {
-					int sizeX = cellSizeProperty.get() * actor.getSize().getX() - 2;
-					int sizeY = cellSizeProperty.get() * actor.getSize().getY() - 2;
+					int sizeX = cellSizeProperty.get() * positionable.getSize().getX() - 2;
+					int sizeY = cellSizeProperty.get() * positionable.getSize().getY() - 2;
 					return Images.load(
-						actor.getAvatar(),
+						positionable.getAvatar(),
 						sizeX,
 						sizeY
 					).get();
 				},
-				actor.avatarProperty(),
-				actor.sizeProperty(),
+				positionable.avatarProperty(),
+				positionable.sizeProperty(),
 				cellSizeProperty.asObject()
 			)
 		);
 		view.getStyleClass().add("image-view-wrapper");
-		view.setUserData(actor);
+		view.setUserData(positionable);
 		view.translateXProperty().bind(
 			BindingUtils.binding(
-				actor.positionProperty(),
+				positionable.positionProperty(),
 				battle.cellSizeProperty().asObject(),
 				(position, cellSize) -> position.getX() * cellSize
 			)
 		);
 		view.translateYProperty().bind(
 			BindingUtils.binding(
-				actor.positionProperty(),
+				positionable.positionProperty(),
 				battle.cellSizeProperty().asObject(),
 				(position, cellSize) -> position.getY() * cellSize
 			)
@@ -179,8 +222,8 @@ public class BattleGrid extends Pane {
 				selectedAvatar = view;
 				originalMousePosition = new Vector2((int) event.getScreenX(), (int) event.getScreenY());
 			} else if (event.getButton().equals(MouseButton.SECONDARY)) {
-				ActorEditor actorEditor = new ActorEditor(actor, battle);
-				actorEditor.show(view);
+				final ContextMenu contextMenu = contextMenuFactory.apply(positionable, battle);
+				contextMenu.show(view, Side.RIGHT, 0, 0);
 			}
 		});
 		view.setOnMouseDragged(event -> {
@@ -191,20 +234,14 @@ public class BattleGrid extends Pane {
 					(int) ((event.getSceneX() - rootX) / cellSizeProperty.get()),
 					(int) ((event.getSceneY() - rootY) / cellSizeProperty.get())
 				);
-				if (!actor.getPosition().equals(newPosition)) {
-					actor.setPosition(newPosition);
+				if (!positionable.getPosition().equals(newPosition)) {
+					positionable.setPosition(newPosition);
 				}
 			}
 		});
 		view.setOnMouseReleased(event -> {
 			selectedAvatar = null;
 		});
-		view.opacityProperty().bind(
-			BindingUtils.binding(
-				actor.currentHpProperty().asObject(),
-				currentHp -> currentHp < 0 ? 0.3d : 1.0d
-			)
-		);
 		return view;
 	}
 }

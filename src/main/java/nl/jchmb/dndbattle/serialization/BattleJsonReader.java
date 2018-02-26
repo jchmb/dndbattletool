@@ -12,6 +12,8 @@ import org.json.simple.parser.ParseException;
 import javafx.scene.paint.Color;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.core.Entity;
+import nl.jchmb.dndbattle.core.Gender;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.core.Vector2;
 
@@ -22,15 +24,30 @@ public class BattleJsonReader {
 		try {
 			JSONObject data = (JSONObject) parser.parse(new FileReader(file));
 			JSONArray actorArray = (JSONArray) data.get("actors");
+			if (data.containsKey("entities")) {
+				JSONArray entityArray = (JSONArray) data.get("entities");
+				for (Object o : entityArray) {
+					readEntity(battle, (JSONObject) o);
+				}
+			}
 			JSONArray statusArray = (JSONArray) data.get("statuses");
-			JSONObject optionsObject = (JSONObject) data.get("options");
+			if (data.containsKey("genders")) {
+				JSONArray genderArray = (JSONArray) data.get("genders");
+				battle.gendersProperty().clear();
+				for (Object o : genderArray) {
+					readGender(battle, (JSONObject) o);
+				}
+			}
+			if (data.containsKey("options")) {
+				JSONObject optionsObject = (JSONObject) data.get("options");
+				readOptions(battle, optionsObject);
+			}
 			for (Object o : statusArray) {
 				readStatus(battle, (JSONObject) o);
 			}
 			for (Object o : actorArray) {
 				readActor(battle, (JSONObject) o);
 			}
-			readOptions(battle, optionsObject);
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
@@ -79,6 +96,18 @@ public class BattleJsonReader {
 		);
 	}
 	
+	private void readGender(Battle battle, JSONObject o) {
+		Gender gender = new Gender();
+		
+		gender.setSymbol((String) o.get("name"));
+		gender.setSubjectPronoun((String) o.get("subject_pronoun"));
+		gender.setObjectPronoun((String) o.get("subject_pronoun"));
+		gender.setPossessivePronoun((String) o.get("possessive_pronoun"));
+		gender.setId(toInt(o, "id"));
+		
+		battle.gendersProperty().add(gender);
+	}
+	
 	private void readStatus(Battle battle, JSONObject o) {
 		Status status = new Status();
 		
@@ -111,6 +140,9 @@ public class BattleJsonReader {
 		Actor actor = new Actor();
 		
 		actor.setName((String) o.get("name"));
+		if (o.containsKey("gender")) {
+			actor.setGender(battle.findGenderById(toInt(o, "gender")));
+		}
 		actor.setInitiative(toInt(o, "initiative"));
 		actor.setCurrentHp(toInt(o, "current_hp"));
 		actor.setMaxHp(toInt(o, "max_hp"));
@@ -129,5 +161,16 @@ public class BattleJsonReader {
 		readStatusesForActor(battle, actor, (JSONArray) o.get("statuses"));
 		
 		battle.getActors().add(actor);
+	}
+	
+	private void readEntity(Battle battle, JSONObject o) {
+		Entity entity = new Entity();
+		
+		entity.setName((String) o.get("name"));
+		entity.setAvatar(new File((String) o.get("avatar")));
+		entity.setPosition(readVector2((JSONObject) o.get("position")));
+		entity.setSize(readVector2((JSONObject) o.get("size")));
+		
+		battle.getEntities().add(entity);
 	}
 }

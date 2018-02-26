@@ -24,6 +24,7 @@ import nl.jchmb.dndbattle.gui.grid.BattleGrid;
 import nl.jchmb.dndbattle.gui.legend.LegendPane;
 import nl.jchmb.dndbattle.gui.menu.EditMenu;
 import nl.jchmb.dndbattle.gui.menu.FileMenu;
+import nl.jchmb.dndbattle.gui.menu.OptionsMenu;
 import nl.jchmb.dndbattle.gui.menu.UploadMenu;
 import nl.jchmb.dndbattle.utils.BindingUtils;
 
@@ -32,7 +33,7 @@ import nl.jchmb.dndbattle.utils.BindingUtils;
  *
  */
 public class Main extends Application {
-	private static final String VERSION = "0.3";
+	private static final String VERSION = "0.4";
 	
 	private final ObjectProperty<Battle> battle = new SimpleObjectProperty<>(new Battle());
 	
@@ -40,6 +41,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			/* Initialize stuff */
+			battle.get().reset();
 			BorderPane root = new BorderPane();
 			buildGui(root, primaryStage);
 			Scene scene = new Scene(root);
@@ -70,6 +72,7 @@ public class Main extends Application {
 		menuBar.getMenus().addAll(
 			new FileMenu(battle, root),
 			new EditMenu(battle, root, window),
+			new OptionsMenu(battle.get(), root),
 			new UploadMenu(root)
 		);
 		return menuBar;

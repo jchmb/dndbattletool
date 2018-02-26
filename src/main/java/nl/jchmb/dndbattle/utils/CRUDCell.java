@@ -15,7 +15,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import nl.jchmb.dndbattle.utils.form.Form;
-import nl.jchmb.dndbattle.utils.form.PopOverForm;
 
 /**
  * @author jochem
@@ -24,16 +23,13 @@ import nl.jchmb.dndbattle.utils.form.PopOverForm;
 public abstract class CRUDCell<T> extends ListCell<T> {
 	private final ListProperty<T> list;
 	private final Function<T, StringProperty> namePropertyFn;
-	private final Stage window;
 	
 	public CRUDCell(
 			final ListProperty<T> list,
-			final Function<T, StringProperty> namePropertyFn,
-			final Stage window
+			final Function<T, StringProperty> namePropertyFn
 	) {
 		this.list = list;
 		this.namePropertyFn = namePropertyFn;
-		this.window = window;
 	}
 	
 	protected int getGraphicSize() {
@@ -69,9 +65,8 @@ public abstract class CRUDCell<T> extends ListCell<T> {
 		MenuItem editItem = new MenuItem("Edit");
 		editItem.setOnAction(event -> {
 			Form editor = getEditor(item);
-			Popups.show(
+			Popups.showForm(
 				editor,
-				window,
 				"Edit"
 			);
 		});
@@ -99,6 +94,12 @@ public abstract class CRUDCell<T> extends ListCell<T> {
 			getEditItem(item),
 			getDeleteItem(item)
 		);
+	}
+	
+	public ContextMenu produceContextMenu(final T item) {
+		ContextMenu contextMenu = new ContextMenu();
+		buildContextMenu(contextMenu, item);
+		return contextMenu;
 	}
 }
 

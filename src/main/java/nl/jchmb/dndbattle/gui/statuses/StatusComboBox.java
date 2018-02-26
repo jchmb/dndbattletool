@@ -6,14 +6,13 @@ import javafx.stage.Stage;
 import nl.jchmb.dndbattle.core.Status;
 
 public class StatusComboBox extends ComboBox<Status> {
-	public StatusComboBox(final ListProperty<Status> statuses, final Stage window) {
+	public StatusComboBox(final ListProperty<Status> statuses) {
 		super();
 		
 		this.setCellFactory(lv -> {
 			return new StatusCell(
 				statuses,
 				Status::nameProperty,
-				window,
 				false,
 				false
 			);
@@ -24,7 +23,6 @@ public class StatusComboBox extends ComboBox<Status> {
 			new StatusCell(
 				statuses,
 				Status::nameProperty,
-				window,
 				false,
 				false
 			)

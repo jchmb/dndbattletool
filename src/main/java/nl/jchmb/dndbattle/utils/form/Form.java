@@ -3,20 +3,21 @@ package nl.jchmb.dndbattle.utils.form;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javafx.beans.WeakListener;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.WeakChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
@@ -28,12 +29,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.jchmb.dndbattle.core.Vector2;
-import nl.jchmb.dndbattle.utils.BindingUtils;
 
 public class Form extends GridPane {
 	private int rowIndex = 0;
 	private final List<Property<?>> properties = new ArrayList<>();
-	private final List<WeakListener> weakListeners = new ArrayList<>();
 	
 	public Form() {
 		setPadding(new Insets(10, 10, 10, 10));
@@ -55,31 +54,6 @@ public class Form extends GridPane {
 		++rowIndex;
 	}
 	
-	protected <T> void bind(Property<T> p1, Property<T> p2) {
-		p1.bindBidirectional(p2);
-		properties.add(p1);
-	}
-	
-	protected <T, U> void bindObject(Property<T> p1, Property<U> p2, Function<U, T> fn) {
-		p1.bind(new ObjectBinding<T>() {
-			{
-				super.bind(p2);
-			}
-			
-			@Override
-			protected T computeValue() {
-				return fn.apply(p2.getValue());
-			}
-			
-		});
-		properties.add(p1);
-	}
-	
-	protected void unbindAll() {
-		// TODO: unbind bidirectional?
-		properties.forEach(Property::unbind);
-	}
-	
 	protected void addVector2Field(
 			final ObjectProperty<Vector2> property,
 			final Spinner<Integer> spinnerX,
@@ -89,6 +63,8 @@ public class Form extends GridPane {
 	) {
 		spinnerX.getValueFactory().setValue(property.get().getX());
 		spinnerY.getValueFactory().setValue(property.get().getY());
+		spinnerX.setEditable(true);
+		spinnerY.setEditable(true);
 		property.bind(
 			new ObjectBinding<>() {
 				{
@@ -107,6 +83,7 @@ public class Form extends GridPane {
 				}
 			}
 		);
+		properties.add(property);
 		addField(spinnerX, labelX);
 		addField(spinnerY, labelY);
 	}
@@ -117,7 +94,18 @@ public class Form extends GridPane {
 		final String label
 	) {
 		bindStrongly(property.asObject(), spinner.getValueFactory().valueProperty());
+		spinner.setEditable(true);
 		addField(spinner, label);
+	}
+	
+	protected void addBooleanField(
+		final BooleanProperty property,
+		final String label
+	) {
+		CheckBox box = new CheckBox();
+		box.setSelected(property.get());
+		bindStrongly(property.asObject(), box.selectedProperty());
+		addField(box, label);
 	}
 	
 	protected void addStringField(
@@ -140,10 +128,12 @@ public class Form extends GridPane {
 		addField(colorField, label);
 	}
 	
-	protected void addOptionalFileField(
+	protected void addFileFieldWithDefault(
 		final ObjectProperty<File> property,
 		final Supplier<FileChooser> chooserSupplier,
-		final String missingText,
+		final File defaultFile,
+		final String defaultText,
+		final String resetButtonText,
 		final String label
 	) {
 		final Button button = new Button();
@@ -156,14 +146,14 @@ public class Form extends GridPane {
 			}
 		});
 		if (property.get() == null) {
-			button.setText(missingText);
+			button.setText(defaultFile == null ? defaultText : defaultFile.getName());
 		} else {
 			button.setText(property.get().getName());
 		}
-		final Button deleteButton = new Button("[X]");
+		final Button deleteButton = new Button(resetButtonText);
 		deleteButton.setOnAction(event -> {
-			button.setText(missingText);
-			property.set(null);
+			button.setText(defaultFile == null ? defaultText : defaultFile.getName());
+			property.set(defaultFile);
 		});
 		final HBox containerField = new HBox();
 		containerField.getChildren().addAll(
@@ -173,34 +163,79 @@ public class Form extends GridPane {
 		addField(containerField, label);
 	}
 	
+	protected void addOptionalFileField(
+			final ObjectProperty<File> property,
+			final Supplier<FileChooser> chooserSupplier,
+			final String missingText,
+			final String label
+	) {
+		addFileFieldWithDefault(
+			property,
+			chooserSupplier,
+			null,
+			missingText,
+			"[X]",
+			label
+		);
+	}
+	
+	private final FileChooser getImageChooser() {
+		final FileChooser chooser = new FileChooser();
+		chooser.setTitle("Choose an image file");
+		chooser.getExtensionFilters().add(
+			new ExtensionFilter("Image file", "*.jpg", "*.png")
+		);
+		return chooser;
+	}
+	
 	protected void addOptionalImageFileField(
 		final ObjectProperty<File> property,
 		final String label
 	) {
 		addOptionalFileField(
 			property,
-			() -> {
-				final FileChooser chooser = new FileChooser();
-				chooser.setTitle("Choose an image file");
-				chooser.getExtensionFilters().add(
-					new ExtensionFilter("Image file", "*.jpg", "*.png")
-				);
-				return chooser;
-			},
+			this::getImageChooser,
 			"(no image)",
 			label
 		);
 	}
 	
+	protected void addImageFileFieldWithDefault(
+			final ObjectProperty<File> property,
+			final File defaultFile,
+			final String defaultText,
+			final String resetText,
+			final String label
+	) {
+		addFileFieldWithDefault(
+			property,
+			this::getImageChooser,
+			defaultFile,
+			defaultText,
+			resetText,
+			label
+		);
+	}
+	
+	protected <T> void addComboBoxField(
+			final ObjectProperty<T> property,
+			final ListProperty<T> sourceProperty,
+			final String label
+	) {
+		final ComboBox<T> comboBox = new ComboBox<>();
+		comboBox.itemsProperty().bind(sourceProperty);
+		bindStrongly(property, comboBox.valueProperty());
+		addField(comboBox, label);
+	}
+	
 	protected final <T> void bindStrongly(final Property<T> modelProperty, final Property<T> fieldProperty) {
 		fieldProperty.setValue(modelProperty.getValue());
 		modelProperty.bind(fieldProperty);
+		properties.add(modelProperty);
 	}
 	
-	protected final <T> void bindWeakly(final Property<T> modelProperty, final Property<T> fieldProperty) {
-		final WeakChangeListener<T> listener = BindingUtils.weakChangeSetter(modelProperty);
-		fieldProperty.setValue(modelProperty.getValue());
-		fieldProperty.addListener(listener);
-		weakListeners.add(listener);
+	public void close() {
+		properties.forEach(Property::unbind);
+		properties.clear();
 	}
 }

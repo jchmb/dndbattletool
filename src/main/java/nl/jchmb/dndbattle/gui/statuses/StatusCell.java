@@ -26,11 +26,10 @@ public class StatusCell extends CRUDCell<Status> {
 	public StatusCell(
 			ListProperty<Status> list,
 			Function<Status, StringProperty> namePropertyFn,
-			final Stage window,
 			boolean editable,
 			boolean deletable
 	) {
-		super(list, namePropertyFn, window);
+		super(list, namePropertyFn);
 		this.editable = editable;
 		this.deletable = deletable;
 	}
