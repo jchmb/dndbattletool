@@ -40,6 +40,21 @@ public class Vector2 {
 	public Vector2 scale(int scaling) {
 		return new Vector2(scaling * x, scaling * y);
 	}
+	
+	public Vector2 rotate(boolean clockwise) {
+		return new Vector2(
+			clockwise ? y : -y,
+			clockwise ? -x : x
+		);
+	}
+	
+	public Vector2 rotate(int numRotations) {
+		Vector2 v = this;
+		for (int i = 0; i < Math.abs(numRotations); i++) {
+			v = v.rotate(numRotations > 0);
+		}
+		return v;
+	}
 
 	@Override
 	public boolean equals(Object other) {
@@ -66,5 +81,9 @@ public class Vector2 {
 			x,
 			y
 		);
+	}
+	
+	public static final Vector2 zero() {
+		return new Vector2(0, 0);
 	}
 }

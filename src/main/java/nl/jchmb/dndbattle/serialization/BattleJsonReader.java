@@ -124,6 +124,13 @@ public class BattleJsonReader {
 		status.setBackgroundColor(readColor((JSONObject) o.get("background_color")));
 		status.setTextColor(readColor((JSONObject) o.get("text_color")));
 		
+		/* Since these entries only exist since v0.6. */
+		if (o.containsKey("text_offset")) {
+			status.setTextOffset(readVector2((JSONObject) o.get("text_offset")));
+			status.setBorderColor(readColor((JSONObject) o.get("border_color")));
+			status.setTextSize(toInt(o, "text_size"));
+		}
+		
 		battle.getStatuses().add(status);
 	}
 
@@ -188,9 +195,9 @@ public class BattleJsonReader {
 	private void readOverlay(Battle battle, JSONObject o) {
 		Overlay overlay = new Overlay();
 		
-		overlay.setName((String) o.get("overlay"));
+		overlay.setName((String) o.get("name"));
 		overlay.setPosition(readVector2((JSONObject) o.get("position")));
-		overlay.setSize(readVector2((JSONObject) o.get("size")));
+//		overlay.setSize(readVector2((JSONObject) o.get("size")));
 		overlay.setColor(readColor((JSONObject) o.get("color")));
 		overlay.setOpacity((Double) o.get("opacity"));
 		

@@ -2,7 +2,9 @@ package nl.jchmb.dndbattle.utils.form;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -31,12 +33,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import nl.jchmb.dndbattle.core.FormProvider;
 import nl.jchmb.dndbattle.core.Settings;
 import nl.jchmb.dndbattle.core.Vector2;
+import nl.jchmb.dndbattle.utils.MultiFactory;
+import nl.jchmb.dndbattle.utils.Popups;
 
 public class Form extends GridPane {
 	private int rowIndex = 0;
 	private final List<Property<?>> properties = new ArrayList<>();
+	private final Map<String, Node> labels = new HashMap<>();
+	private final Map<String, Node> fields = new HashMap<>();
 	
 	public Form() {
 		setPadding(new Insets(10, 10, 10, 10));
@@ -48,6 +55,13 @@ public class Form extends GridPane {
 		getColumnConstraints().add(cc2);
 	}
 	
+	protected final void setFieldVisibility(final String label, final boolean visibility) {
+		for (int i = 0; i < 2; i++) {
+			labels.get(label).setVisible(visibility);
+			fields.get(label).setVisible(visibility);
+		}
+	}
+	
 	public void addField(Node node, String label) {
 		Label fieldLabel = new Label(label);
 		fieldLabel.setTextFill(Color.BLACK);
@@ -55,6 +69,8 @@ public class Form extends GridPane {
 		add(node, 1, rowIndex);
 		GridPane.setMargin(fieldLabel, new Insets(5));
 		GridPane.setMargin(node, new Insets(5));
+		labels.put(label, fieldLabel);
+		fields.put(label, node);
 		++rowIndex;
 	}
 	
@@ -251,6 +267,31 @@ public class Form extends GridPane {
 		comboBox.itemsProperty().bind(sourceProperty);
 		bindStrongly(property, comboBox.valueProperty());
 		addField(comboBox, label);
+	}
+	
+	public <T extends FormProvider> void addSubclassableObjectField(
+			final ObjectProperty<T> property,
+			final MultiFactory<T> factory,
+			final String label
+	) {
+		final ComboBox<T> comboBox = new ComboBox<>();
+		comboBox.setItems(factory.produceObjects(property.get()));
+		comboBox.setValue(property.get());
+		final Button button = new Button("Edit");
+		button.setOnAction(event -> {
+			final Form subForm = property.get().getForm();
+			Popups.showForm(
+				subForm,
+				"Edit " + property.get().toString().toLowerCase()
+			);
+		});
+		final HBox containerField = new HBox();
+		containerField.getChildren().addAll(
+			comboBox,
+			button
+		);
+		bindStrongly(property, comboBox.valueProperty());
+		addField(containerField, label);
 	}
 	
 	public final <T> void bindStrongly(final Property<T> modelProperty, final Property<T> fieldProperty) {

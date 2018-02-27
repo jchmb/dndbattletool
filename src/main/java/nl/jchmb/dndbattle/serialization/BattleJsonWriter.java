@@ -107,7 +107,7 @@ public class BattleJsonWriter {
 		
 		o.put("name", overlay.getName());
 		o.put("position", serializeVector2(overlay.getPosition()));
-		o.put("size", serializeVector2(overlay.getSize()));
+//		o.put("size", serializeVector2(overlay.getSize()));
 		o.put("color", serializeColor(overlay.getColor()));
 		o.put("opacity", overlay.getOpacity());
 		
@@ -142,6 +142,9 @@ public class BattleJsonWriter {
 		o.put("symbol", status.getSymbol());
 		o.put("background_color", serializeColor(status.getBackgroundColor()));
 		o.put("text_color", serializeColor(status.getTextColor()));
+		o.put("border_color", serializeColor(status.getBorderColor()));
+		o.put("text_size", status.getTextSize());
+		o.put("text_offset", serializeVector2(status.getTextOffset()));
 		
 		statusArray.add(o);
 	}

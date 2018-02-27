@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import nl.jchmb.dndbattle.utils.Images;
+import nl.jchmb.dndbattle.utils.Popups;
 
 public class UploadMenu extends Menu {
 	public UploadMenu(BorderPane root) {
@@ -36,9 +37,6 @@ public class UploadMenu extends Menu {
 			try {
 				JSONObject data = (JSONObject) parser.parse(jsonString);
 				String link = (String) ((JSONObject) data.get("data")).get("link");
-				PopOver popOver = new PopOver();
-				popOver.setDetached(true);
-				
 				
 				HBox container = new HBox();
 				
@@ -60,11 +58,10 @@ public class UploadMenu extends Menu {
 					button
 				);
 				
-				popOver.setContentNode(container);
-				popOver.setPrefWidth(400.0f);
-				popOver.setWidth(400.0f);
-				popOver.setTitle("URL");
-				popOver.show(root.getLeft());
+				Popups.show(
+					container,
+					"Battle image URL"
+				);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

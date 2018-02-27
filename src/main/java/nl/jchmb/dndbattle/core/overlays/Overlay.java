@@ -1,6 +1,8 @@
 package nl.jchmb.dndbattle.core.overlays;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
@@ -10,6 +12,7 @@ import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -18,11 +21,13 @@ import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Positionable;
 import nl.jchmb.dndbattle.core.Sizable;
 import nl.jchmb.dndbattle.core.Vector2;
+import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 
-public class Overlay implements Positionable, Sizable {
+public class Overlay implements Positionable {
 	private final StringProperty name = new SimpleStringProperty("New overlay");
 	private final ObjectProperty<Vector2> position = new SimpleObjectProperty<>(new Vector2(0, 0));
-	private final ObjectProperty<Vector2> size = new SimpleObjectProperty<>(new Vector2(1, 1));
+	private final ObjectProperty<OverlayStructure> structure = new SimpleObjectProperty<OverlayStructure>(new RectangleStructure());
 	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.RED);
 	private final DoubleProperty opacity = new SimpleDoubleProperty(0.5f);
 	
@@ -58,12 +63,18 @@ public class Overlay implements Positionable, Sizable {
 			getColor().getBlue(),
 			getOpacity()
 		);
-		final Rectangle rectangle = new Rectangle(
-			battle.getCellSize() * getSize().getX(),
-			battle.getCellSize() * getSize().getY(),
-			color
-		);
-		return rectangle;
+		final Group group = new Group();
+		for (Vector2 square : getStructure().getSquares()) {
+			final Rectangle rectangle = new Rectangle(
+				battle.getCellSize(),
+				battle.getCellSize(),
+				color
+			);
+			rectangle.setTranslateX(battle.getCellSize() * square.getX());
+			rectangle.setTranslateY(battle.getCellSize() * square.getY());
+			group.getChildren().add(rectangle);
+		}
+		return group;
 	}
 
 	public final ObjectProperty<Color> colorProperty() {
@@ -80,20 +91,6 @@ public class Overlay implements Positionable, Sizable {
 		this.colorProperty().set(color);
 	}
 
-	public final ObjectProperty<Vector2> sizeProperty() {
-		return this.size;
-	}
-	
-
-	public final Vector2 getSize() {
-		return this.sizeProperty().get();
-	}
-	
-
-	public final void setSize(final Vector2 size) {
-		this.sizeProperty().set(size);
-	}
-
 	public final DoubleProperty opacityProperty() {
 		return this.opacity;
 	}
@@ -107,6 +104,21 @@ public class Overlay implements Positionable, Sizable {
 	public final void setOpacity(final double opacity) {
 		this.opacityProperty().set(opacity);
 	}
+
+	public final ObjectProperty<OverlayStructure> structureProperty() {
+		return this.structure;
+	}
+	
+
+	public final OverlayStructure getStructure() {
+		return this.structureProperty().get();
+	}
+	
+
+	public final void setStructure(final OverlayStructure structure) {
+		this.structureProperty().set(structure);
+	}
+	
 	
 	
 	

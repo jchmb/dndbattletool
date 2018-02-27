@@ -1,5 +1,8 @@
 package nl.jchmb.dndbattle.core;
 
 public enum Rotation {
-	NONE;
+	ZERO,
+	ONE,
+	TWO,
+	THREE
 }

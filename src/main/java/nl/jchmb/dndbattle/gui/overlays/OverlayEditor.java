@@ -5,6 +5,10 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import nl.jchmb.dndbattle.core.Sizable;
 import nl.jchmb.dndbattle.core.overlays.Overlay;
+import nl.jchmb.dndbattle.core.overlays.structures.ConeStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
+import nl.jchmb.dndbattle.utils.MultiFactory;
 import nl.jchmb.dndbattle.utils.form.Form;
 
 public class OverlayEditor extends Form {
@@ -33,12 +37,30 @@ public class OverlayEditor extends Form {
 		);
 		
 		/* Size */
-		addVector2Field(
-			overlay.sizeProperty(),
-			Sizable.getSpinner(),
-			Sizable.getSpinner(),
-			"Width",
-			"Height"
+//		addVector2Field(
+//			overlay.,
+//			Sizable.getSpinner(),
+//			Sizable.getSpinner(),
+//			"Width",
+//			"Height"
+//		);
+		
+		/* Structure */
+		
+		
+		addSubclassableObjectField(
+			overlay.structureProperty(),
+			getFactory(),
+			"Shape"
 		);
+	}
+	
+	private final MultiFactory<OverlayStructure> getFactory() {
+		final MultiFactory<OverlayStructure> factory = new MultiFactory<>();
+		
+		factory.add(RectangleStructure.class, "Rectangle");
+		factory.add(ConeStructure.class, "Cone");
+		
+		return factory;
 	}
 }

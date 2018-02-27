@@ -61,6 +61,7 @@ public class ActorEditor extends TabbedForm {
 		addFormTab("avatar", "Avatar");
 		addFormTab("stats", "Stats");
 		addFormTab("statuses", "Statuses");
+		addFormTab("options", "Options");
 		
 		buildFields(battle);
 	}
@@ -81,7 +82,7 @@ public class ActorEditor extends TabbedForm {
 		);
 		
 		/* Initiative */
-		getFormTab("general").addIntegerField(
+		getFormTab("stats").addIntegerField(
 			actor.initiativeProperty(),
 			new Spinner<Integer>(-20, Integer.MAX_VALUE, 1),
 			"Initiative"
@@ -102,13 +103,13 @@ public class ActorEditor extends TabbedForm {
 		);
 		
 		/* Hide HP */
-		getFormTab("stats").addBooleanField(
+		getFormTab("options").addBooleanField(
 			actor.hiddenHpProperty(),
 			"Hide HP"
 		);
 		
 		/* Hide position */
-		getFormTab("general").addBooleanField(
+		getFormTab("options").addBooleanField(
 			actor.hiddenPositionProperty(),
 			"Hide position"
 		);

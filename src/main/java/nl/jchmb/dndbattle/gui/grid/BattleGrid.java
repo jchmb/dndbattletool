@@ -3,6 +3,7 @@ package nl.jchmb.dndbattle.gui.grid;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
@@ -149,11 +150,11 @@ public class BattleGrid extends Pane {
 		rebuildActors();
 	}
 	
-	private void onEntityListChanged(Change<? extends Entity> change) {
+	private void onEntityListChanged(final Change<? extends Entity> change) {
 		rebuildEntities();
 	}
 	
-	private void onOverlayListChanged(Change<? extends Overlay> change) {
+	private void onOverlayListChanged(final Change<? extends Overlay> change) {
 		rebuildOverlays();
 	}
 	
@@ -173,8 +174,8 @@ public class BattleGrid extends Pane {
 		battle.entitiesProperty().forEach(entity -> entityLayer.getChildren().add(buildEntity(entity)));
 	}
 	
-	private Node buildEntity(Entity entity) {
-		BorderPane view = buildPositionable(
+	private Node buildEntity(final Entity entity) {
+		final BorderPane view = buildPositionable(
 			entity,
 			(p, b) -> EntityCell.createContextMenu((Entity) p, b),
 			entity.avatarProperty()
@@ -182,8 +183,8 @@ public class BattleGrid extends Pane {
 		return view;
 	}
 	
-	private Node buildActor(Actor actor) {
-		BorderPane view = buildPositionable(
+	private Node buildActor(final Actor actor) {
+		final BorderPane view = buildPositionable(
 			actor,
 			(p, b) -> ActorCell.createContextMenu((Actor) p, b),
 			actor.avatarProperty()
@@ -198,19 +199,26 @@ public class BattleGrid extends Pane {
 	}
 	
 	private Node buildOverlay(final Overlay overlay) {
-		BorderPane view = buildPositionable(
+		final Property<?>[] extraProperties = overlay.getStructure().getProperties();
+		final Property<?>[] properties = new Property<?>[3 + extraProperties.length];
+		properties[0] = overlay.colorProperty();
+		properties[1] = overlay.opacityProperty();
+		properties[2] = overlay.structureProperty();
+		for (int i = 3; i < properties.length; i++) {
+			properties[i] = extraProperties[i - 3];
+		}
+		final BorderPane view = buildPositionable(
 			overlay,
 			(p, b) -> OverlayCell.createContextMenu((Overlay) p, b),
-			overlay.colorProperty(),
-			overlay.opacityProperty()
+			properties
 		);
 		return view;
 	}
 	
 	private BorderPane buildPositionable(
-			Positionable positionable,
-			BiFunction<Positionable, Battle, ContextMenu> contextMenuFactory,
-			Property<?>... imageProperties
+			final Positionable positionable,
+			final BiFunction<Positionable, Battle, ContextMenu> contextMenuFactory,
+			final Property<?>... imageProperties
 	) {
 		BorderPane view = new BorderPane();
 		IntegerProperty cellSizeProperty = battle.cellSizeProperty();

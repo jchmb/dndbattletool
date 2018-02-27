@@ -38,7 +38,7 @@ import nl.jchmb.dndbattle.utils.BindingUtils;
  *
  */
 public class Main extends Application {
-	private static final String VERSION = "0.5";
+	private static final String VERSION = "0.6";
 	
 	private static final File SETTINGS_FILE = new File("settings.conf");
 	private static final SettingsReader SETTINGS_READER = new SettingsReader();

@@ -51,7 +51,10 @@ public class StatusCell extends CRUDCell<Status> {
 				super.bind(
 					item.symbolProperty(),
 					item.backgroundColorProperty(),
-					item.textColorProperty()
+					item.textColorProperty(),
+					item.borderColorProperty(),
+					item.textOffsetProperty(),
+					item.textSizeProperty()
 				);
 			}
 			

@@ -5,6 +5,7 @@ import java.io.File;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,6 +18,9 @@ public class Status {
 	private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<Color>(Color.WHITE);
 	private final ObjectProperty<Color> textColor = new SimpleObjectProperty<Color>(Color.BLACK);
 	private final ObjectProperty<File> imageFile = new SimpleObjectProperty<File>();
+	private final ObjectProperty<Vector2> textOffset = new SimpleObjectProperty<>(Vector2.zero());
+	private final IntegerProperty textSize = new SimpleIntegerProperty(12);
+	private final ObjectProperty<Color> borderColor = new SimpleObjectProperty<>(Color.BLACK);
 	
 	public final StringProperty nameProperty() {
 		return this.name;
@@ -92,5 +96,50 @@ public class Status {
 	public final void setImageFile(final File imageFile) {
 		this.imageFileProperty().set(imageFile);
 	}
+
+	public final ObjectProperty<Vector2> textOffsetProperty() {
+		return this.textOffset;
+	}
+	
+
+	public final Vector2 getTextOffset() {
+		return this.textOffsetProperty().get();
+	}
+	
+
+	public final void setTextOffset(final Vector2 textOffset) {
+		this.textOffsetProperty().set(textOffset);
+	}
+
+	public final IntegerProperty textSizeProperty() {
+		return this.textSize;
+	}
+	
+
+	public final int getTextSize() {
+		return this.textSizeProperty().get();
+	}
+	
+
+	public final void setTextSize(final int textSize) {
+		this.textSizeProperty().set(textSize);
+	}
+	
+
+	public final ObjectProperty<Color> borderColorProperty() {
+		return this.borderColor;
+	}
+	
+
+	public final Color getBorderColor() {
+		return this.borderColorProperty().get();
+	}
+	
+
+	public final void setBorderColor(final Color borderColor) {
+		this.borderColorProperty().set(borderColor);
+	}
+	
+	
 	
 }
