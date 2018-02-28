@@ -12,6 +12,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WeakChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.geometry.Side;
 import javafx.scene.Group;
@@ -34,6 +35,7 @@ import nl.jchmb.dndbattle.core.Positionable;
 import nl.jchmb.dndbattle.core.Sizable;
 import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.core.overlays.Overlay;
+import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
 import nl.jchmb.dndbattle.gui.actors.ActorCell;
 import nl.jchmb.dndbattle.gui.actors.ActorEditor;
 import nl.jchmb.dndbattle.gui.entities.EntityCell;
@@ -212,6 +214,32 @@ public class BattleGrid extends Pane {
 			(p, b) -> OverlayCell.createContextMenu((Overlay) p, b),
 			properties
 		);
+		final WeakChangeListener<OverlayStructure> listener = new WeakChangeListener<>(
+			(prop, oldValue, newValue) -> {
+				view.centerProperty().unbind();
+				view.centerProperty().bind(
+					new ObjectBinding<>() {
+						{
+							super.bind(
+								battle.cellSizeProperty(),
+								overlay.colorProperty(),
+								overlay.opacityProperty(),
+								overlay.structureProperty()
+							);
+							super.bind(newValue.getProperties());
+						}
+
+						@Override
+						protected Node computeValue() {
+							return overlay.getImageRepresentation(battle);
+						}
+						
+					}
+				);
+			}
+		);
+		overlay.structureProperty().addListener(listener);
+		view.setUserData(listener);
 		return view;
 	}
 	
@@ -249,7 +277,7 @@ public class BattleGrid extends Pane {
 								battle.cellSizeProperty()
 							);
 							super.bind(
-								imageProperties	
+								imageProperties
 							);
 						}
 						@Override

@@ -3,11 +3,17 @@
  */
 package nl.jchmb.dndbattle.core;
 
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 /**
  * @author jochem
  *
  */
 public class Vector2 {
+	public static final Vector2 EX = new Vector2(1, 0);
+	public static final Vector2 EY = new Vector2(0, 1);
+	
 	private final int x, y;
 	
 	public Vector2(int x, int y) {
@@ -55,6 +61,30 @@ public class Vector2 {
 		}
 		return v;
 	}
+	
+	/**
+	 * Rotate this Vector2, given the east as its initial direction, or the north-east if the 
+	 * direction is diagonal.
+	 * @param direction
+	 * @return
+	 */
+	public Vector2 rotate(final Direction direction) {
+		switch (direction) {
+			case EAST:
+			case NORTH_EAST:
+				return this;
+			case NORTH:
+			case NORTH_WEST:
+				return rotate(1);
+			case WEST:
+			case SOUTH_WEST:
+				return rotate(2);
+			case SOUTH:
+			case SOUTH_EAST:
+			default:
+				return rotate(3);
+		}
+	}
 
 	@Override
 	public boolean equals(Object other) {
@@ -85,5 +115,18 @@ public class Vector2 {
 	
 	public static final Vector2 zero() {
 		return new Vector2(0, 0);
+	}
+	
+	public static final Stream<Vector2> line(
+			final Vector2 offset,
+			final Vector2 velocity,
+			final int repetitions
+	) {
+		return IntStream.range(0, repetitions)
+			.mapToObj(
+				i -> offset.add(
+					velocity.scale(i)
+				)
+			);
 	}
 }

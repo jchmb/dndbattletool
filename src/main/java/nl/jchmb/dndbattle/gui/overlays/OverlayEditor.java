@@ -5,6 +5,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import nl.jchmb.dndbattle.core.Sizable;
 import nl.jchmb.dndbattle.core.overlays.Overlay;
+import nl.jchmb.dndbattle.core.overlays.structures.CircleStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.ConeStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
@@ -60,6 +61,7 @@ public class OverlayEditor extends Form {
 		
 		factory.add(RectangleStructure.class, "Rectangle");
 		factory.add(ConeStructure.class, "Cone");
+		factory.add(CircleStructure.class, "Circle");
 		
 		return factory;
 	}

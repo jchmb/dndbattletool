@@ -21,13 +21,14 @@ import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Positionable;
 import nl.jchmb.dndbattle.core.Sizable;
 import nl.jchmb.dndbattle.core.Vector2;
+import nl.jchmb.dndbattle.core.overlays.structures.ConeStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 
 public class Overlay implements Positionable {
 	private final StringProperty name = new SimpleStringProperty("New overlay");
 	private final ObjectProperty<Vector2> position = new SimpleObjectProperty<>(new Vector2(0, 0));
-	private final ObjectProperty<OverlayStructure> structure = new SimpleObjectProperty<OverlayStructure>(new RectangleStructure());
+	private final ObjectProperty<OverlayStructure> structure = new SimpleObjectProperty<OverlayStructure>(new ConeStructure());
 	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.RED);
 	private final DoubleProperty opacity = new SimpleDoubleProperty(0.5f);
 	
@@ -118,10 +119,5 @@ public class Overlay implements Positionable {
 	public final void setStructure(final OverlayStructure structure) {
 		this.structureProperty().set(structure);
 	}
-	
-	
-	
-	
-	
 	
 }

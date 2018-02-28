@@ -17,6 +17,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -265,6 +266,17 @@ public class Form extends GridPane {
 	) {
 		final ComboBox<T> comboBox = new ComboBox<>();
 		comboBox.itemsProperty().bind(sourceProperty);
+		bindStrongly(property, comboBox.valueProperty());
+		addField(comboBox, label);
+	}
+	
+	public <T> void addComboBoxField(
+			final ObjectProperty<T> property,
+			final ObservableList<T> options,
+			final String label
+	) {
+		final ComboBox<T> comboBox = new ComboBox<>();
+		comboBox.setItems(options);
 		bindStrongly(property, comboBox.valueProperty());
 		addField(comboBox, label);
 	}

@@ -16,6 +16,10 @@ import nl.jchmb.dndbattle.core.Gender;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.core.overlays.Overlay;
+import nl.jchmb.dndbattle.core.overlays.structures.CircleStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.ConeStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 
 public class BattleJsonWriter {
 	@SuppressWarnings("unchecked")
@@ -107,9 +111,9 @@ public class BattleJsonWriter {
 		
 		o.put("name", overlay.getName());
 		o.put("position", serializeVector2(overlay.getPosition()));
-//		o.put("size", serializeVector2(overlay.getSize()));
 		o.put("color", serializeColor(overlay.getColor()));
 		o.put("opacity", overlay.getOpacity());
+		o.put("structure", serializeStructure(overlay.getStructure()));
 		
 		overlayArray.add(o);
 	}
@@ -169,6 +173,23 @@ public class BattleJsonWriter {
 		o.put("red", color.getRed());
 		o.put("green", color.getGreen());
 		o.put("blue", color.getBlue());
+		
+		return o;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private JSONObject serializeStructure(OverlayStructure structure) {
+		JSONObject o = new JSONObject();
+		
+		o.put("class", structure.getClass().getName());
+		if (structure instanceof CircleStructure) {
+			o.put("size", ((CircleStructure) structure).getSize().name());
+		} else if (structure instanceof RectangleStructure) {
+			o.put("size", serializeVector2(((RectangleStructure) structure).getSize()));
+		} else if (structure instanceof ConeStructure) {
+			o.put("size", ((ConeStructure) structure).getSize().name());
+			o.put("direction", ((ConeStructure) structure).getDirection().name());
+		}
 		
 		return o;
 	}

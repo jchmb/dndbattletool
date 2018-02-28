@@ -3,6 +3,7 @@ package nl.jchmb.dndbattle.serialization;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,11 +13,16 @@ import org.json.simple.parser.ParseException;
 import javafx.scene.paint.Color;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.core.Direction;
 import nl.jchmb.dndbattle.core.Entity;
 import nl.jchmb.dndbattle.core.Gender;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.core.overlays.Overlay;
+import nl.jchmb.dndbattle.core.overlays.structures.CircleStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.ConeStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 
 public class BattleJsonReader {
 	public void read(Battle battle, File file) {
@@ -200,7 +206,36 @@ public class BattleJsonReader {
 //		overlay.setSize(readVector2((JSONObject) o.get("size")));
 		overlay.setColor(readColor((JSONObject) o.get("color")));
 		overlay.setOpacity((Double) o.get("opacity"));
+		overlay.setStructure(readStructure((JSONObject) o.get("structure")));
 		
 		battle.getOverlays().add(overlay);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private OverlayStructure readStructure(JSONObject o) {
+		if (!o.containsKey("class")) {
+			return new RectangleStructure();
+		}
+		try {
+			Class<? extends OverlayStructure> cls =
+				(Class<? extends OverlayStructure>) Class.forName((String) o.get("class"));
+			final OverlayStructure structure = cls.getConstructor().newInstance();
+			
+			if (structure instanceof RectangleStructure) {
+				((RectangleStructure) structure).setSize(readVector2((JSONObject) o.get("size")));
+			} else if (structure instanceof ConeStructure) {
+				((ConeStructure) structure).setDirection(Direction.valueOf((String) o.get("direction")));
+				((ConeStructure) structure).setSize(ConeStructure.Size.valueOf((String) o.get("size")));
+			} else if (structure instanceof CircleStructure) {
+				((CircleStructure) structure).setSize(CircleStructure.Size.valueOf((String) o.get("size")));
+			}
+			
+			return structure;
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+				IllegalArgumentException | InvocationTargetException |
+				NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+			return new RectangleStructure();
+		}
 	}
 }
