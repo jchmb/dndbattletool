@@ -1,5 +1,6 @@
 package nl.jchmb.dndbattle.gui.gender;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import nl.jchmb.dndbattle.core.Gender;
 import nl.jchmb.dndbattle.utils.form.Form;
@@ -34,6 +35,12 @@ public class GenderEditor extends Form {
 			gender.possessivePronounProperty(),
 			new TextField(),
 			"Possessive pronoun"
+		);
+		
+		/* Plural */
+		addBooleanField(
+			gender.pluralProperty(),
+			"Plural"
 		);
 	}
 }

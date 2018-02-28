@@ -41,6 +41,7 @@ public class Actor implements Positionable, Sizable {
 		FXCollections.observableArrayList()
 	);
 	private final ObjectProperty<Gender> gender = new SimpleObjectProperty<>(Gender.OTHER);
+	private final BooleanProperty proper = new SimpleBooleanProperty(true);
 	
 	public Actor() {
 		setAvatar(new File("res/unknown.jpg"));
@@ -303,5 +304,20 @@ public class Actor implements Positionable, Sizable {
 	public final void setHiddenPosition(final boolean hiddenPosition) {
 		this.hiddenPositionProperty().set(hiddenPosition);
 	}
+
+	public final BooleanProperty properProperty() {
+		return this.proper;
+	}
+	
+
+	public final boolean isProper() {
+		return this.properProperty().get();
+	}
+	
+
+	public final void setProper(final boolean proper) {
+		this.properProperty().set(proper);
+	}
+	
 	
 }

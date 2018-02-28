@@ -114,6 +114,12 @@ public class ActorEditor extends TabbedForm {
 			"Hide position"
 		);
 		
+		/* Proper */
+		getFormTab("options").addBooleanField(
+			actor.properProperty(),
+			"Proper name"
+		);
+		
 		/* Avatar */
 		getFormTab("avatar").addImageFileFieldWithDefault(
 			actor.avatarProperty(),

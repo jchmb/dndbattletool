@@ -2,7 +2,9 @@ package nl.jchmb.dndbattle.core;
 
 import java.util.Random;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,21 +15,24 @@ public class Gender {
 		"Male",
 		"he",
 		"his",
-		"him"
+		"him",
+		false
 	);
 	public static final Gender FEMALE = new Gender(
 		2,
 		"Female",
 		"she",
 		"her",
-		"her"
+		"her",
+		false
 	);
 	public static final Gender OTHER = new Gender(
 		0,
 		"Other",
 		"they",
 		"them",
-		"their"
+		"their",
+		true
 	);
 	
 	public Gender() {
@@ -39,13 +44,15 @@ public class Gender {
 		final String symbol,
 		final String subjectPronoun,
 		final String possessivePronoun,
-		final String objectPronoun
+		final String objectPronoun,
+		final boolean plural
 	) {
 		setId(id);
 		setSymbol(symbol);
 		setSubjectPronoun(subjectPronoun);
 		setPossessivePronoun(possessivePronoun);
 		setObjectPronoun(objectPronoun);
+		setPlural(plural);
 	}
 	
 	private final StringProperty symbol = new SimpleStringProperty("Undetermined");
@@ -53,6 +60,7 @@ public class Gender {
 	private final StringProperty possessivePronoun = new SimpleStringProperty("their");
 	private final StringProperty objectPronoun = new SimpleStringProperty("them");
 	private final IntegerProperty id = new SimpleIntegerProperty();
+	private final BooleanProperty plural = new SimpleBooleanProperty(false);
 
 	public final StringProperty symbolProperty() {
 		return this.symbol;
@@ -131,6 +139,21 @@ public class Gender {
 	public final void setId(final int id) {
 		this.idProperty().set(id);
 	}
+
+	public final BooleanProperty pluralProperty() {
+		return this.plural;
+	}
+	
+
+	public final boolean isPlural() {
+		return this.pluralProperty().get();
+	}
+	
+
+	public final void setPlural(final boolean plural) {
+		this.pluralProperty().set(plural);
+	}
+	
 	
 	
 }

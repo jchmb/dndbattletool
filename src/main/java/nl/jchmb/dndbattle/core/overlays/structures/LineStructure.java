@@ -87,5 +87,6 @@ public class LineStructure implements OverlayStructure {
 		this.directionProperty().set(direction);
 	}
 	
+	
 
 }
