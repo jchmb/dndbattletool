@@ -7,6 +7,7 @@ import nl.jchmb.dndbattle.core.Sizable;
 import nl.jchmb.dndbattle.core.overlays.Overlay;
 import nl.jchmb.dndbattle.core.overlays.structures.CircleStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.ConeStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.LineStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 import nl.jchmb.dndbattle.utils.MultiFactory;
@@ -62,6 +63,7 @@ public class OverlayEditor extends Form {
 		factory.add(RectangleStructure.class, "Rectangle");
 		factory.add(ConeStructure.class, "Cone");
 		factory.add(CircleStructure.class, "Circle");
+		factory.add(LineStructure.class, "Line");
 		
 		return factory;
 	}

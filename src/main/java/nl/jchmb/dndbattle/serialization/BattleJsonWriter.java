@@ -18,6 +18,7 @@ import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.core.overlays.Overlay;
 import nl.jchmb.dndbattle.core.overlays.structures.CircleStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.ConeStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.LineStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 
@@ -189,6 +190,9 @@ public class BattleJsonWriter {
 		} else if (structure instanceof ConeStructure) {
 			o.put("size", ((ConeStructure) structure).getSize().name());
 			o.put("direction", ((ConeStructure) structure).getDirection().name());
+		} else if (structure instanceof LineStructure) {
+			o.put("length", ((LineStructure) structure).getLength());
+			o.put("direction", ((LineStructure) structure).getDirection().name());
 		}
 		
 		return o;

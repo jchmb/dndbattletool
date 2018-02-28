@@ -19,4 +19,8 @@ public enum Direction {
 	public final Vector2 getValue() {
 		return value;
 	}
+	
+	public final boolean isDiagonal() {
+		return getValue().getX() != 0 && getValue().getY() != 0;
+	}
 }

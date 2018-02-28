@@ -21,6 +21,7 @@ import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.core.overlays.Overlay;
 import nl.jchmb.dndbattle.core.overlays.structures.CircleStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.ConeStructure;
+import nl.jchmb.dndbattle.core.overlays.structures.LineStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 
@@ -228,6 +229,9 @@ public class BattleJsonReader {
 				((ConeStructure) structure).setSize(ConeStructure.Size.valueOf((String) o.get("size")));
 			} else if (structure instanceof CircleStructure) {
 				((CircleStructure) structure).setSize(CircleStructure.Size.valueOf((String) o.get("size")));
+			} else if (structure instanceof LineStructure) {
+				((LineStructure) structure).setLength(toInt(o, "length"));
+				((LineStructure) structure).setDirection(Direction.valueOf((String) o.get("direction")));
 			}
 			
 			return structure;
