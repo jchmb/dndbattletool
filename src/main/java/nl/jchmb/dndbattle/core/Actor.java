@@ -1,9 +1,8 @@
-/**
- * 
- */
 package nl.jchmb.dndbattle.core;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -29,7 +28,7 @@ import nl.jchmb.dndbattle.utils.Images;
 public class Actor implements Positionable, Sizable {
 	private final StringProperty name = new SimpleStringProperty();
 	private final IntegerProperty initiative = new SimpleIntegerProperty();
-	private final ObjectProperty<File> avatar = new SimpleObjectProperty<>();
+	private final ObjectProperty<Path> avatar = new SimpleObjectProperty<>();
 	private final StringProperty sheet = new SimpleStringProperty("");
 	private final IntegerProperty currentHp = new SimpleIntegerProperty(1);
 	private final IntegerProperty maxHp = new SimpleIntegerProperty(1);
@@ -45,7 +44,7 @@ public class Actor implements Positionable, Sizable {
 	private final BooleanProperty active = new SimpleBooleanProperty(true);
 	
 	public Actor() {
-		setAvatar(new File("res/unknown.jpg"));
+		setAvatar(Paths.get("res/unknown.jpg"));
 	}
 	
 	public final StringProperty nameProperty() {
@@ -72,15 +71,15 @@ public class Actor implements Positionable, Sizable {
 		this.initiativeProperty().set(initiative);
 	}
 	
-	public final ObjectProperty<File> avatarProperty() {
+	public final ObjectProperty<Path> avatarProperty() {
 		return this.avatar;
 	}
 	
-	public final File getAvatar() {
+	public final Path getAvatar() {
 		return this.avatarProperty().get();
 	}
 	
-	public final void setAvatar(final File avatarProperty) {
+	public final void setAvatar(final Path avatarProperty) {
 		this.avatarProperty().set(avatarProperty);
 	}
 	

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +26,7 @@ import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 
 public class BattleJsonWriter {
 	@SuppressWarnings("unchecked")
-	public void write(Battle battle, File file) {
+	public final void write(final Battle battle, final Path file) {
 		JSONObject root = new JSONObject();
 		
 		JSONArray actorArray = new JSONArray();
@@ -54,15 +56,14 @@ public class BattleJsonWriter {
 		root.put("genders", genderArray);
 		root.put("options", serializeOptionsObject(battle));
 
-		FileWriter stream;
+		
 		try {
 			StringWriter writer = new StringWriter();
 			root.writeJSONString(writer);
 			String jsonString = writer.toString();
-			stream = new FileWriter(file);
-			stream.write(jsonString);
-			stream.close();
+			Files.newBufferedWriter(file).write(jsonString);
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -128,7 +129,7 @@ public class BattleJsonWriter {
 		o.put("initiative", actor.getInitiative());
 		o.put("current_hp", actor.getCurrentHp());
 		o.put("max_hp", actor.getMaxHp());
-		o.put("avatar", actor.getAvatar().getAbsolutePath());
+		o.put("avatar", actor.getAvatar().toUri().getPath());
 		o.put("x", actor.getPosition().getX());
 		o.put("y", actor.getPosition().getY());
 		o.put("size", serializeVector2(actor.getSize()));

@@ -1,6 +1,8 @@
 package nl.jchmb.dndbattle.utils.form;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -166,10 +168,10 @@ public class Form extends GridPane implements FormService {
 	}
 	
 	public void addFileFieldWithDefault(
-		final ObjectProperty<File> property,
+		final ObjectProperty<Path> property,
 		final Supplier<FileChooser> chooserSupplier,
-		final File defaultFile,
-		final Consumer<File> fileSelectedConsumer,
+		final Path defaultFile,
+		final Consumer<Path> fileSelectedConsumer,
 		final Node button,
 		final String resetButtonText,
 		final String label
@@ -178,8 +180,8 @@ public class Form extends GridPane implements FormService {
 			FileChooser chooser = chooserSupplier.get();
 			File file = chooser.showOpenDialog(null);
 			if (file != null) {
-				property.set(file);
-				fileSelectedConsumer.accept(file);
+				property.set(file.toPath());
+				fileSelectedConsumer.accept(file.toPath());
 			}
 		});
 		if (property.get() == null) {
@@ -202,9 +204,9 @@ public class Form extends GridPane implements FormService {
 	}
 	
 	public void addOptionalFileField(
-			final ObjectProperty<File> property,
+			final ObjectProperty<Path> property,
 			final Supplier<FileChooser> chooserSupplier,
-			final Consumer<File> fileSelectedConsumer,
+			final Consumer<Path> fileSelectedConsumer,
 			final Node button,
 			final String label
 	) {
@@ -233,10 +235,10 @@ public class Form extends GridPane implements FormService {
 		Settings.INSTANCE.setImageDirectory(file.getParentFile());
 	}
 	
-	private void selectImage(File file, final ImageView view) {
+	private void selectImage(Path file, final ImageView view) {
 		file = Optional.ofNullable(file)
-			.orElse(new File("res/unknown.jpg"));
-		setImageDirectory(file);
+			.orElse(Paths.get("res/unknown.jpg"));
+		setImageDirectory(file.toFile());
 		view.setImage(
 			Images.load(
 				file,
@@ -247,7 +249,7 @@ public class Form extends GridPane implements FormService {
 	}
 	
 	public void addOptionalImageFileField(
-		final ObjectProperty<File> property,
+		final ObjectProperty<Path> property,
 		final String label
 	) {
 		final ImageView view = new ImageView();
@@ -263,8 +265,8 @@ public class Form extends GridPane implements FormService {
 	}
 	
 	public void addImageFileFieldWithDefault(
-			final ObjectProperty<File> property,
-			final File defaultFile,
+			final ObjectProperty<Path> property,
+			final Path defaultFile,
 			final String defaultText,
 			final String resetText,
 			final String label

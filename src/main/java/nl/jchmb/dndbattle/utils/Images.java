@@ -12,6 +12,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -27,31 +29,32 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 
 public class Images {
-	public static Optional<Image> load(File file) {
+	public static Optional<Image> load(final Path file) {
 		try {
 			return Optional.of(
 				new Image(
-					new FileInputStream(file)
+					Files.newInputStream(file)
 				)
 			);
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return Optional.empty();
 		}
 	}
 	
-	public static Optional<Image> load(File file, double w, double h) {
+	public static Optional<Image> load(final Path file, double w, double h) {
 		try {
 			return Optional.of(
 				new Image(
-					new FileInputStream(file),
+					Files.newInputStream(file),
 					w,
 					h,
 					false,
 					true
 				)
 			);
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			return Optional.empty();
 		}

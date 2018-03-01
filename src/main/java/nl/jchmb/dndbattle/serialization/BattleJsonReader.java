@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,11 +31,15 @@ import nl.jchmb.dndbattle.core.overlays.structures.OverlayStructure;
 import nl.jchmb.dndbattle.core.overlays.structures.RectangleStructure;
 
 public class BattleJsonReader {
-	public void read(Battle battle, File file) {
+	public void read(final Battle battle, final Path file) {
 		battle.reset();
 		JSONParser parser = new JSONParser();
 		try {
-			JSONObject data = (JSONObject) parser.parse(new FileReader(file));
+			JSONObject data = (JSONObject) parser.parse(
+				Files.newBufferedReader(file)
+					.lines()
+					.collect(Collectors.joining())
+			);
 			JSONArray actorArray = (JSONArray) data.get("actors");
 			if (data.containsKey("entities")) {
 				JSONArray entityArray = (JSONArray) data.get("entities");
@@ -175,7 +184,7 @@ public class BattleJsonReader {
 		actor.setCurrentHp(toInt(o, "current_hp"));
 		actor.setMaxHp(toInt(o, "max_hp"));
 		actor.setHiddenHp((Boolean) o.get("hide_hp"));
-		actor.setAvatar(new File((String) o.get("avatar")));
+		actor.setAvatar(readPath(o, "avatar"));
 		actor.setPosition(
 			new Vector2(
 				toInt(o, "x"),
@@ -189,6 +198,10 @@ public class BattleJsonReader {
 		readStatusesForActor(battle, actor, (JSONArray) o.get("statuses"));
 		
 		battle.getActors().add(actor);
+	}
+	
+	private final Path readPath(final JSONObject o, final String key) {
+		return Paths.get(URI.create((String) o.get(key)));
 	}
 	
 	private void readEntity(Battle battle, JSONObject o) {

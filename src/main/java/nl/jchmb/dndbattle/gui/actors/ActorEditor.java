@@ -4,6 +4,7 @@
 package nl.jchmb.dndbattle.gui.actors;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -129,7 +130,7 @@ public class ActorEditor extends TabbedForm {
 		/* Avatar */
 		getFormTab("avatar").addImageFileFieldWithDefault(
 			actor.avatarProperty(),
-			new File("res/unknown.jpg"),
+			Paths.get("res/unknown.jpg"),
 			"(no image)",
 			"[Reset]",
 			"Avatar"

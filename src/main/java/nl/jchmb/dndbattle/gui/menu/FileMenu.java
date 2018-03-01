@@ -26,6 +26,7 @@ import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Settings;
 import nl.jchmb.dndbattle.serialization.BattleJsonReader;
 import nl.jchmb.dndbattle.serialization.BattleJsonWriter;
+import nl.jchmb.dndbattle.serialization.BattleSerializer;
 import nl.jchmb.dndbattle.utils.Images;
 
 /**
@@ -113,7 +114,7 @@ public class FileMenu extends Menu {
 	}
 	
 	private void saveAsAction() {
-		BattleJsonWriter writer = new BattleJsonWriter();
+		final BattleSerializer serializer;
 		FileChooser chooser = new FileChooser();
 		chooser.setInitialDirectory(settings.getBattleDirectory());
 		chooser.setTitle("Save battle as...");
@@ -122,9 +123,11 @@ public class FileMenu extends Menu {
 		);
 		File file = chooser.showSaveDialog(null);
 		if (file != null) {
-			writer.write(battle.get(), file);
-			battle.get().setFile(file);
-			settings.setBattleDirectory(file.getParentFile());
+			serializer = new BattleSerializer(
+				new File("."),
+				file
+			);
+			serializer.write(battle.get());
 		}
 	}
 	

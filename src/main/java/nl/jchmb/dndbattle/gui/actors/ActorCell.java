@@ -6,6 +6,7 @@ package nl.jchmb.dndbattle.gui.actors;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 
 import org.controlsfx.control.PopOver;
 
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
+import nl.jchmb.dndbattle.utils.Images;
 import nl.jchmb.dndbattle.utils.Popups;
 
 /**
@@ -71,22 +73,12 @@ public class ActorCell extends ListCell<Actor> {
 
 				@Override
 				protected ImageView computeValue() {
-					ImageView view = new ImageView();
-					try {
-						File file = actor.avatarProperty().get();
-						Image image;
-						if (file != null) {
-							image = new Image(
-								new FileInputStream(file),
-								48,
-								48,
-								false,
-								true
-							);
-							view.setImage(image);
-						}
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
+					final ImageView view = new ImageView();
+					final Path file = actor.avatarProperty().get();
+					final Image image;
+					if (file != null) {
+						image = Images.load(file).get();
+						view.setImage(image);
 					}
 					return view;
 				}

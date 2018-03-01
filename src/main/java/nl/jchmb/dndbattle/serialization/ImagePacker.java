@@ -36,12 +36,16 @@ public class ImagePacker {
 		for (final Map.Entry<File, String> entry : references.entrySet()) {
 			final File file = entry.getKey();
 			final String uuid = entry.getValue();
+			final File newFile = new File(
+				imageDirectory,
+				uuid
+			);
+			if (file.equals(newFile)) {
+				continue;
+			}
 			Files.copy(
 				file.toPath(),
-				new File(
-					imageDirectory,
-					uuid
-				).toPath(),
+				newFile.toPath(),
 				StandardCopyOption.REPLACE_EXISTING
 			);
 		}
