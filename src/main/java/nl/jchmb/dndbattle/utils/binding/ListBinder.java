@@ -89,6 +89,16 @@ public class ListBinder<T, ExtendedT, U> {
 		return this;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public final ListBinder<T, ExtendedT, U> addPropertyGetters(
+			final Function<T, Property<?>>... propertyGetters
+	) {
+		for (final Function<T, Property<?>> propertyGetter : propertyGetters) {
+			addPropertyGetter(propertyGetter);
+		}
+		return this;
+	}
+	
 	public final void registerItems() {
 		for (final T item : list) {
 			if (knownItems.contains(item)) {
@@ -143,5 +153,46 @@ public class ListBinder<T, ExtendedT, U> {
 			binder.mirrorProperty()
 		);
 		return binder;
+	}
+	
+	public static final <T> ListBinder<T, T, Node> nodeListBinder(
+			final ListProperty<T> list,
+			final ObservableList<Node> nodeList,
+			final Function<T, Node> mapper,
+			final Predicate<T> filter,
+			final Comparator<T> comparator,
+			final Property<?>... extraProperties
+	) {
+		final ListBinder<T, T, Node> binder = new ListBinder<>(
+			list,
+			Function.identity(),
+			mapper,
+			filter,
+			comparator
+		);
+		for (final Property<?> extraProperty : extraProperties) {
+			binder.addExtraProperty(extraProperty);
+		}
+		Bindings.bindContent(
+			nodeList,
+			binder.mirrorProperty()
+		);
+		return binder;
+	}
+	
+	public static final <T> ListBinder<T, T, Node> nodeListBinder(
+			final ListProperty<T> list,
+			final ObservableList<Node> nodeList,
+			final Function<T, Node> mapper,
+			final Property<?>... extraProperties
+	) {
+		return nodeListBinder(
+			list,
+			nodeList,
+			mapper,
+			x -> true,
+			(x, y) -> 0,
+			extraProperties
+		);
 	}
 }
