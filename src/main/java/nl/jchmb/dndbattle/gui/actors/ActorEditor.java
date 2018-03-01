@@ -40,7 +40,7 @@ import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.gui.statuses.StatusComboBox;
 import nl.jchmb.dndbattle.gui.statuses.StatusList;
-import nl.jchmb.dndbattle.utils.BindingUtils;
+import nl.jchmb.dndbattle.utils.binding.BindingUtils;
 import nl.jchmb.dndbattle.utils.form.Form;
 import nl.jchmb.dndbattle.utils.form.PopOverForm;
 import nl.jchmb.dndbattle.utils.form.TabbedForm;

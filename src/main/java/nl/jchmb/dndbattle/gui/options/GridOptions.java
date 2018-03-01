@@ -10,7 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.jchmb.dndbattle.core.Battle;
-import nl.jchmb.dndbattle.utils.BindingUtils;
+import nl.jchmb.dndbattle.utils.binding.BindingUtils;
 import nl.jchmb.dndbattle.utils.form.Form;
 import nl.jchmb.dndbattle.utils.form.PopOverForm;
 

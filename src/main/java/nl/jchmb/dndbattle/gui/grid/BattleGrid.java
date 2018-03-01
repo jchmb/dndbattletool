@@ -40,10 +40,11 @@ import nl.jchmb.dndbattle.gui.actors.ActorCell;
 import nl.jchmb.dndbattle.gui.actors.ActorEditor;
 import nl.jchmb.dndbattle.gui.entities.EntityCell;
 import nl.jchmb.dndbattle.gui.overlays.OverlayCell;
-import nl.jchmb.dndbattle.utils.BindingUtils;
 import nl.jchmb.dndbattle.utils.CRUDCell;
 import nl.jchmb.dndbattle.utils.Images;
 import nl.jchmb.dndbattle.utils.Popups;
+import nl.jchmb.dndbattle.utils.binding.BindingUtils;
+import nl.jchmb.dndbattle.utils.binding.ListBinder;
 
 public class BattleGrid extends Pane {
 	private final Battle battle;
@@ -55,6 +56,10 @@ public class BattleGrid extends Pane {
 	private Node selectedAvatar = null;
 	private Vector2 originalMousePosition = new Vector2(0, 0);
 	private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+	private final ListBinder<Actor, Actor, Node> actorBinder;
+	private final ListBinder<Entity, Entity, Node> entityBinder;
+	private final ListBinder<Overlay, Overlay, Node> overlayBinder;
+	
 	
 	public BattleGrid(final Battle battle) {
 		this.battle = battle;
@@ -87,9 +92,33 @@ public class BattleGrid extends Pane {
 			overlayLayer
 		);
 		
-		battle.actorsProperty().addListener(this::onActorsListChanged);
-		battle.entitiesProperty().addListener(this::onEntityListChanged);
-		battle.overlaysProperty().addListener(this::onOverlayListChanged);
+		actorBinder = ListBinder.nodeListBinder(
+			battle.actorsProperty(),
+			actorLayer.getChildren(),
+			this::buildActor,
+			battle.gridSizeProperty()
+		);
+		
+		actorBinder.bind();
+		
+		entityBinder = ListBinder.nodeListBinder(
+			battle.entitiesProperty(),
+			entityLayer.getChildren(),
+			this::buildEntity,
+			battle.gridSizeProperty()
+		);
+		
+		entityBinder.bind();
+		
+		overlayBinder = ListBinder.nodeListBinder(
+			battle.overlaysProperty(),
+			overlayLayer.getChildren(),
+			this::buildOverlay,
+			battle.gridSizeProperty()
+		);
+		
+		overlayBinder.bind();
+		
 		
 		battle.backgroundColorProperty().addListener(this::onGridColorChanged);
 		battle.borderColorProperty().addListener(this::onGridColorChanged);

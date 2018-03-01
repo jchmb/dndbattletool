@@ -44,8 +44,9 @@ import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Status;
 import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.gui.statuses.StatusDrawer;
-import nl.jchmb.dndbattle.utils.BindingUtils;
 import nl.jchmb.dndbattle.utils.Images;
+import nl.jchmb.dndbattle.utils.binding.BindingUtils;
+import nl.jchmb.dndbattle.utils.binding.ListBinder;
 
 public class LegendEntry extends Pane {
 	private final int HEALTH_BAR_WIDTH = 100, HEALTH_BAR_HEIGHT = 6;
@@ -59,6 +60,7 @@ public class LegendEntry extends Pane {
 	private final Label hpView;
 	private final Label positionView;
 	private final HBox statusesView;
+	private final ListBinder<Status, Status, Node> statusBinder;
 	private final WeakListChangeListener<Status> statusesChangeListener =
 		new WeakListChangeListener<Status>(this::onStatusesChanged);
 	private final int index;
@@ -169,20 +171,24 @@ public class LegendEntry extends Pane {
 		statusesView.translateXProperty().bind(
 			Bindings.add(10.0f + HEALTH_BAR_WIDTH, battle.legendEntryHeightProperty())
 		);
-		ListProperty<Node> statusesViewList = new SimpleListProperty<>();
-		statusesViewList.bind(
-			Bindings.createObjectBinding(
-				() -> convertStatuses(actor.getStatuses()),
-				actor.statusesProperty()
-			)
-		);
-		
-		Bindings.bindContent(
+		statusBinder = ListBinder.nodeListBinder(
+			actor.statusesProperty(),
 			statusesView.getChildren(),
-			statusesViewList
+			this::convertStatusToNode
 		);
+		// TODO heap pollution...?
+		statusBinder
+			.addPropertyGetters(
+				Status::symbolProperty,
+				Status::backgroundColorProperty,
+				Status::borderColorProperty,
+				Status::textOffsetProperty,
+				Status::textColorProperty,
+				Status::textSizeProperty
+			)
+		;
+		statusBinder.bind();
 		statusesView.setTranslateY(2.0f);
-		buildStatuses();
 		
 		getChildren().addAll(
 			imageView,
