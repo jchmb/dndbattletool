@@ -12,8 +12,8 @@ public class BattleAction implements BattleEvent {
 	private final ObjectProperty<Effect> effect = new SimpleObjectProperty<>(new NullEffect());
 	
 	@Override
-	public String getXml(Battle battle) {
-		return getEffect().getXml(battle);
+	public String getXml(final Battle battle) {
+		return getEffect().getXml(battle, true);
 	}
 
 	public final ObjectProperty<Actor> subjectProperty() {

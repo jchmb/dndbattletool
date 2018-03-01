@@ -26,6 +26,8 @@ public class LegendPane extends GridPane {
 	private List<? extends Actor> mirrorList;
 	private final ChangeListener<Number> initiativeListener =
 		(prop, oldValue, newValue) -> onInitiativeChanged(prop, oldValue, newValue);
+	private final ChangeListener<Boolean> activeListener =
+		(prop, oldValue, newValue) -> onActiveChanged(prop, oldValue, newValue);
 	
 	public LegendPane(final Battle battle) {
 		super();
@@ -75,8 +77,13 @@ public class LegendPane extends GridPane {
 		int index = 0;
 		int column = 0;
 		for (Actor actor : mirrorList) {
+			if (!actor.isActive()) {
+				continue;
+			}
 			actor.initiativeProperty().removeListener(initiativeListener);
+			actor.activeProperty().removeListener(activeListener);
 			actor.initiativeProperty().addListener(initiativeListener);
+			actor.activeProperty().addListener(activeListener);
 			add(buildEntry(actor, index), column, index);
 			index++;
 			if (index >= battle.getGridSize().getY()) {
@@ -88,6 +95,10 @@ public class LegendPane extends GridPane {
 	
 	private Node buildEntry(Actor actor, int index) {
 		return new LegendEntry(battle, actor, index);
+	}
+
+	private void onActiveChanged(ObservableValue<? extends Boolean> property, Boolean oldValue, Boolean newValue) {
+		rebuild(battle.getActors());
 	}
 	
 	private void onInitiativeChanged(ObservableValue<? extends Number> property, Number oldValue, Number newValue) {

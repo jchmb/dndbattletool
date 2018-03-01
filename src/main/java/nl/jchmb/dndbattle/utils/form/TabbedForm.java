@@ -6,7 +6,7 @@ import java.util.Map;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
-public class TabbedForm extends TabPane {
+public class TabbedForm extends TabPane implements FormService {
 	private final Map<String, Form> forms = new HashMap<>();
 	
 	public TabbedForm() {
@@ -25,5 +25,11 @@ public class TabbedForm extends TabPane {
 	
 	protected final Form getFormTab(String key) {
 		return forms.get(key);
+	}
+
+	@Override
+	public void close() {
+		forms.values().stream()
+			.forEach(Form::close);
 	}
 }

@@ -5,7 +5,7 @@ import nl.jchmb.dndbattle.core.Battle;
 public class NullEffect implements Effect {
 
 	@Override
-	public String getXml(Battle battle) {
+	public String getXml(final Battle battle, final boolean primary) {
 		return "nothing happened";
 	}
 

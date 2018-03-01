@@ -23,13 +23,13 @@ public class DamageEffect implements Effect {
 	}
 	
 	@Override
-	public String getXml(Battle battle) {
+	public String getXml(final Battle battle, final boolean primary) {
 		String attackMessage = String.format(
 			"%s attacked %s with %s %s",
 			getSubject()
-				.asSubjectXml(),
+				.asSubjectXml(primary),
 			getTarget()
-				.asObjectXml(),
+				.asObjectXml(primary),
 			getSubject()
 				.getGender()
 				.getPossessivePronoun(),

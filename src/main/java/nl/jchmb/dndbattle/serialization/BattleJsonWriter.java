@@ -135,6 +135,7 @@ public class BattleJsonWriter {
 		o.put("hide_hp", actor.isHiddenHp());
 		o.put("hide_position", actor.isHiddenPosition());
 		o.put("statuses", statusesToJsonArray(actor));
+		o.put("proper", actor.isProper());
 		
 		actorArray.add(o);
 	}

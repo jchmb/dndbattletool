@@ -168,6 +168,9 @@ public class BattleJsonReader {
 		if (o.containsKey("hide_position")) {
 			actor.setHiddenPosition((Boolean) o.get("hide_position"));
 		}
+		if (o.containsKey("proper")) {
+			actor.setProper((Boolean) o.get("proper"));
+		}
 		actor.setInitiative(toInt(o, "initiative"));
 		actor.setCurrentHp(toInt(o, "current_hp"));
 		actor.setMaxHp(toInt(o, "max_hp"));

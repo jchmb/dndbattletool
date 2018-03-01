@@ -1,7 +1,5 @@
 package nl.jchmb.dndbattle.core.effects;
 
-import java.util.stream.Collectors;
-
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -14,11 +12,11 @@ public class ConjunctionEffect implements Effect {
 	);
 	
 	@Override
-	public String getXml(Battle battle) {
+	public String getXml(final Battle battle, final boolean primary) {
 		if (effects.size() <= 2) {
-			return effects.stream()
-				.map(effect -> effect.getXml(battle))
-				.collect(Collectors.joining("and"));
+			return effects.get(0).getXml(battle, primary) +
+				" and " +
+				effects.get(1).getXml(battle, false);
 		} else {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < effects.size(); i++) {
@@ -28,7 +26,12 @@ public class ConjunctionEffect implements Effect {
 				if (i == effects.size() - 1) {
 					builder.append(" and ");
 				}
-				builder.append(effects.get(i).getXml(battle));
+				builder.append(
+					effects.get(i).getXml(
+						battle,
+						primary && i == 0
+					)
+				);
 			}
 			return builder.toString();
 		}

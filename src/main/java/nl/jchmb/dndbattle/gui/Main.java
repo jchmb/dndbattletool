@@ -38,7 +38,7 @@ import nl.jchmb.dndbattle.utils.BindingUtils;
  *
  */
 public class Main extends Application {
-	private static final String VERSION = "0.6";
+	private static final String VERSION = "0.6.1";
 	
 	private static final File SETTINGS_FILE = new File("settings.conf");
 	private static final SettingsReader SETTINGS_READER = new SettingsReader();
@@ -65,7 +65,7 @@ public class Main extends Application {
 				BindingUtils.binding(
 					battle.get().fileProperty(),
 					file -> String.format(
-						"Tabletop Battle Tool %s%s",
+						"DnD Battle Tool %s%s",
 						VERSION,
 						battle.get().getFile() == null ?
 							"" :

@@ -42,6 +42,7 @@ public class Actor implements Positionable, Sizable {
 	);
 	private final ObjectProperty<Gender> gender = new SimpleObjectProperty<>(Gender.OTHER);
 	private final BooleanProperty proper = new SimpleBooleanProperty(true);
+	private final BooleanProperty active = new SimpleBooleanProperty(true);
 	
 	public Actor() {
 		setAvatar(new File("res/unknown.jpg"));
@@ -250,28 +251,30 @@ public class Actor implements Positionable, Sizable {
 			getGender().getPossessivePronoun();
 	}
 	
-	public final String asSubjectXml() {
+	private final String getNameXml() {
 		return String.format(
-			"<actor name=\"%s\" pronoun=\"%s\" />",
-			getName(),
-			getGender().getSubjectPronoun()
+			"%s<actor>%s</actor>",
+			!isProper() ? "the " : "",
+			getName()
 		);
 	}
 	
-	public final String asObjectXml() {
-		return String.format(
-			"<actor name=\"%s\" pronoun=\"%s\" />",
-			getName(),
-			getGender().getObjectPronoun()
-		);
+	public final String asSubjectXml(final boolean primary) {
+		return primary ?
+			getNameXml() :
+			getGender().getSubjectPronoun();
 	}
 	
-	public final String asPossessiveXml() {
-		return String.format(
-			"<actor name=\"%s\" pronoun=\"%s\" />",
-			getName(),
-			getGender().getPossessivePronoun()
-		);
+	public final String asObjectXml(final boolean primary) {
+		return primary ?
+			getNameXml() :
+			getGender().getObjectPronoun();
+	}
+	
+	public final String asPossessiveXml(final boolean primary) {
+		return primary ?
+			(getNameXml() + "'s") :
+			getGender().getPossessivePronoun();
 	}
 	
 	@Override
@@ -318,6 +321,21 @@ public class Actor implements Positionable, Sizable {
 	public final void setProper(final boolean proper) {
 		this.properProperty().set(proper);
 	}
+
+	public final BooleanProperty activeProperty() {
+		return this.active;
+	}
+	
+
+	public final boolean isActive() {
+		return this.activeProperty().get();
+	}
+	
+
+	public final void setActive(final boolean active) {
+		this.activeProperty().set(active);
+	}
+	
 	
 	
 }

@@ -167,8 +167,12 @@ public class BattleGrid extends Pane {
 	
 	private void rebuildActors() {
 		actorLayer.getChildren().clear();
-		battle.actorsProperty().forEach(actor -> actorLayer.getChildren().add(buildActor(actor)));
-		// TODO: clean old
+		battle.actorsProperty().stream()
+			.filter(Actor::isActive)
+			.forEach(
+				actor -> actorLayer.getChildren().add(buildActor(actor))
+			);
+		// TODO: clean old?
 	}
 	
 	private void rebuildEntities() {

@@ -40,7 +40,7 @@ import nl.jchmb.dndbattle.core.Vector2;
 import nl.jchmb.dndbattle.utils.MultiFactory;
 import nl.jchmb.dndbattle.utils.Popups;
 
-public class Form extends GridPane {
+public class Form extends GridPane implements FormService {
 	private int rowIndex = 0;
 	private final List<Property<?>> properties = new ArrayList<>();
 	private final Map<String, Node> labels = new HashMap<>();
@@ -114,7 +114,8 @@ public class Form extends GridPane {
 		final Spinner<Integer> spinner,
 		final String label
 	) {
-		bindStrongly(property.asObject(), spinner.getValueFactory().valueProperty());
+		final ObjectProperty<Integer> objectProperty = property.asObject();
+		bindStrongly(objectProperty, spinner.getValueFactory().valueProperty());
 		spinner.setEditable(true);
 		addField(spinner, label);
 	}
@@ -124,7 +125,8 @@ public class Form extends GridPane {
 		final Spinner<Double> spinner,
 		final String label
 	) {
-		bindStrongly(property.asObject(), spinner.getValueFactory().valueProperty());
+		final ObjectProperty<Double> objectProperty = property.asObject();
+		bindStrongly(objectProperty, spinner.getValueFactory().valueProperty());
 		spinner.setEditable(true);
 		addField(spinner, label);
 	}
@@ -135,7 +137,7 @@ public class Form extends GridPane {
 	) {
 		CheckBox box = new CheckBox();
 		box.setSelected(property.get());
-		bindStrongly(property.asObject(), box.selectedProperty());
+		bindStrongly(property, box.selectedProperty());
 		addField(box, label);
 	}
 	

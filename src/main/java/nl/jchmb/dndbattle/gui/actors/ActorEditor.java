@@ -102,6 +102,12 @@ public class ActorEditor extends TabbedForm {
 			"Max HP"
 		);
 		
+		/* Active */
+		getFormTab("options").addBooleanField(
+			actor.activeProperty(),
+			"Active"
+		);
+		
 		/* Hide HP */
 		getFormTab("options").addBooleanField(
 			actor.hiddenHpProperty(),

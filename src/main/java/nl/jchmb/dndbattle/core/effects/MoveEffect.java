@@ -11,11 +11,11 @@ public class MoveEffect implements Effect {
 	private final ObjectProperty<Vector2> translation = new SimpleObjectProperty<>(new Vector2(0, 0));
 	
 	@Override
-	public String getXml(Battle battle) {
+	public String getXml(final Battle battle, final boolean primary) {
 		return String.format(
 			"%s moved from %s to %s",
 			getSubject()
-				.asSubjectXml(),
+				.asSubjectXml(primary),
 			getSubject()
 				.getPosition()
 				.getXml(),

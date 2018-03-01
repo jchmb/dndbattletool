@@ -118,9 +118,8 @@ public class ActorCell extends ListCell<Actor> {
 		MenuItem editItem = new MenuItem("Edit");
 		editItem.setOnAction(event -> {
 			ActorEditor editor = new ActorEditor(actor, battle);
-			Popups.show(
+			Popups.showForm(
 				editor,
-				(Stage) Window.getWindows().get(0),
 				"Edit actor"
 			);
 		});
