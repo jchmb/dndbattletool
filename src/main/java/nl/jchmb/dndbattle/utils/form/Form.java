@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -19,6 +20,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -27,6 +29,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -37,6 +40,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import nl.jchmb.dndbattle.core.FormProvider;
 import nl.jchmb.dndbattle.core.Settings;
 import nl.jchmb.dndbattle.core.Vector2;
+import nl.jchmb.dndbattle.utils.Images;
 import nl.jchmb.dndbattle.utils.MultiFactory;
 import nl.jchmb.dndbattle.utils.Popups;
 
@@ -166,30 +170,29 @@ public class Form extends GridPane implements FormService {
 		final Supplier<FileChooser> chooserSupplier,
 		final File defaultFile,
 		final Consumer<File> fileSelectedConsumer,
-		final String defaultText,
+		final Node button,
 		final String resetButtonText,
 		final String label
 	) {
-		final Button button = new Button();
-		button.setOnAction(event -> {
+		button.setOnMouseClicked(event -> {
 			FileChooser chooser = chooserSupplier.get();
 			File file = chooser.showOpenDialog(null);
 			if (file != null) {
 				property.set(file);
-				button.setText(property.get().getName());
 				fileSelectedConsumer.accept(file);
 			}
 		});
 		if (property.get() == null) {
-			button.setText(defaultFile == null ? defaultText : defaultFile.getName());
+			fileSelectedConsumer.accept(defaultFile);
 		} else {
-			button.setText(property.get().getName());
+			fileSelectedConsumer.accept(property.get());
 		}
 		final Button deleteButton = new Button(resetButtonText);
 		deleteButton.setOnAction(event -> {
-			button.setText(defaultFile == null ? defaultText : defaultFile.getName());
+			fileSelectedConsumer.accept(defaultFile);
 			property.set(defaultFile);
 		});
+		deleteButton.setTranslateX(20);
 		final HBox containerField = new HBox();
 		containerField.getChildren().addAll(
 			button,
@@ -202,7 +205,7 @@ public class Form extends GridPane implements FormService {
 			final ObjectProperty<File> property,
 			final Supplier<FileChooser> chooserSupplier,
 			final Consumer<File> fileSelectedConsumer,
-			final String missingText,
+			final Node button,
 			final String label
 	) {
 		addFileFieldWithDefault(
@@ -210,7 +213,7 @@ public class Form extends GridPane implements FormService {
 			chooserSupplier,
 			null,
 			fileSelectedConsumer,
-			missingText,
+			button,
 			"[X]",
 			label
 		);
@@ -230,15 +233,31 @@ public class Form extends GridPane implements FormService {
 		Settings.INSTANCE.setImageDirectory(file.getParentFile());
 	}
 	
+	private void selectImage(File file, final ImageView view) {
+		file = Optional.ofNullable(file)
+			.orElse(new File("res/unknown.jpg"));
+		setImageDirectory(file);
+		view.setImage(
+			Images.load(
+				file,
+				50,
+				50
+			).get()
+		);
+	}
+	
 	public void addOptionalImageFileField(
 		final ObjectProperty<File> property,
 		final String label
 	) {
+		final ImageView view = new ImageView();
 		addOptionalFileField(
 			property,
 			this::getImageChooser,
-			this::setImageDirectory,
-			"(no image)",
+			file -> {
+				selectImage(file, view);
+			},
+			view,
 			label
 		);
 	}
@@ -250,12 +269,15 @@ public class Form extends GridPane implements FormService {
 			final String resetText,
 			final String label
 	) {
+		final ImageView view = new ImageView();
 		addFileFieldWithDefault(
 			property,
 			this::getImageChooser,
 			defaultFile,
-			this::setImageDirectory,
-			defaultText,
+			file -> {
+				selectImage(file, view);
+			},
+			view,
 			resetText,
 			label
 		);
