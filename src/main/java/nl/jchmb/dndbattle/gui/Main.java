@@ -31,7 +31,7 @@ import nl.jchmb.dndbattle.gui.menu.OptionsMenu;
 import nl.jchmb.dndbattle.gui.menu.UploadMenu;
 import nl.jchmb.dndbattle.serialization.SettingsReader;
 import nl.jchmb.dndbattle.serialization.SettingsWriter;
-import nl.jchmb.dndbattle.utils.BindingUtils;
+import nl.jchmb.dndbattle.utils.binding.BindingUtils;
 
 /**
  * @author jochem

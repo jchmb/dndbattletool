@@ -40,10 +40,10 @@ import nl.jchmb.dndbattle.gui.actors.ActorCell;
 import nl.jchmb.dndbattle.gui.actors.ActorEditor;
 import nl.jchmb.dndbattle.gui.entities.EntityCell;
 import nl.jchmb.dndbattle.gui.overlays.OverlayCell;
-import nl.jchmb.dndbattle.utils.BindingUtils;
 import nl.jchmb.dndbattle.utils.CRUDCell;
 import nl.jchmb.dndbattle.utils.Images;
 import nl.jchmb.dndbattle.utils.Popups;
+import nl.jchmb.dndbattle.utils.binding.BindingUtils;
 
 public class BattleGrid extends Pane {
 	private final Battle battle;

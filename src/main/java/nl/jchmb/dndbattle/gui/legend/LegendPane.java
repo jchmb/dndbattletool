@@ -3,12 +3,16 @@ package nl.jchmb.dndbattle.gui.legend;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,7 +23,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import nl.jchmb.dndbattle.core.Actor;
 import nl.jchmb.dndbattle.core.Battle;
-import nl.jchmb.dndbattle.utils.BindingUtils;
+import nl.jchmb.dndbattle.utils.IndexedObject;
+import nl.jchmb.dndbattle.utils.binding.BindingUtils;
+import nl.jchmb.dndbattle.utils.binding.ListBinder;
 
 public class LegendPane extends GridPane {
 	private final Battle battle;
@@ -28,7 +34,9 @@ public class LegendPane extends GridPane {
 		(prop, oldValue, newValue) -> onInitiativeChanged(prop, oldValue, newValue);
 	private final ChangeListener<Boolean> activeListener =
 		(prop, oldValue, newValue) -> onActiveChanged(prop, oldValue, newValue);
-	
+	private final ListBinder<Actor, IndexedObject<Actor>, Node> entryBinder;
+		
+	@SuppressWarnings("unchecked")
 	public LegendPane(final Battle battle) {
 		super();
 		
@@ -40,15 +48,43 @@ public class LegendPane extends GridPane {
 			)
 		);
 		setAlignment(Pos.TOP_RIGHT);
-		battle.actorsProperty().addListener(this::onChanged);
 		
-		addChangeListeners(
+		entryBinder = ListBinder.indexedNodeListBinder(
+			battle.actorsProperty(),
+			getChildren(),
+			x -> {
+				final Node entry = buildEntry(x.getObject(), x.getIndex());
+				GridPane.setConstraints(
+					entry,
+					x.getIndex() / battle.getGridSize().getY(),
+					x.getIndex() % battle.getGridSize().getY()
+				);
+				return entry;
+			},
+			Actor::isActive,
+			Comparator.comparingInt(Actor::getInitiative)
+				.reversed(),
 			battle.legendColumnsProperty(),
 			battle.legendEntryEvenColorProperty(),
-			battle.legendEntryOddColorProperty()
+			battle.legendEntryOddColorProperty(),
+			battle.legendEntryFontColorProperty(),
+			battle.legendEntryHeightProperty()
 		);
+		entryBinder.addPropertyGetter(Actor::initiativeProperty);
+		entryBinder.addPropertyGetter(Actor::activeProperty);
+		entryBinder.bind();
 		
-		rebuild(battle.actorsProperty());
+		// TODO: initiative + active listener integrated in new style
+		
+//		battle.actorsProperty().addListener(this::onChanged);
+		
+//		addChangeListeners(
+//			battle.legendColumnsProperty(),
+//			battle.legendEntryEvenColorProperty(),
+//			battle.legendEntryOddColorProperty()
+//		);
+		
+//		rebuild(battle.actorsProperty());
 	}
 	
 	private <T> void addChangeListener(Property<T> property) {

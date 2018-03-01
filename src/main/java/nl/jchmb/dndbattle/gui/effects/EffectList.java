@@ -7,7 +7,7 @@ import javafx.scene.layout.BorderPane;
 import nl.jchmb.dndbattle.core.Battle;
 import nl.jchmb.dndbattle.core.Round;
 import nl.jchmb.dndbattle.core.effects.Effect;
-import nl.jchmb.dndbattle.utils.BindingUtils;
+import nl.jchmb.dndbattle.utils.binding.BindingUtils;
 
 public class EffectList extends BorderPane {
 	public EffectList(final Battle battle) {
