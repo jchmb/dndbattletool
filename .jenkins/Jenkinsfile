@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    triggers {
+        pollSCM('*/5 * * * 1-5')
+    }
+
+    stages {
+        stage ('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                sh './gradlew --no-daemon --stacktrace --debug build'
+            }
+            post {
+                always {
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'build/libs/dndbattletool*.jar', fingerprint: true
+                }
+            }
+        }
+    }
+}
