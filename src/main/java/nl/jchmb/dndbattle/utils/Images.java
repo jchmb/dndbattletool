@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
-import javafx.embed.swing.SwingFXUtils;
+//import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -81,7 +81,8 @@ public class Images {
 			)
 		);
 		WritableImage image = root.snapshot(params, null);
-		return SwingFXUtils.fromFXImage(image, null);
+		return null;
+		//return SwingFXUtils.fromFXImage(image, null);
 	}
 	
 	public static String upload(BorderPane root, String clientID) {

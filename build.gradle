@@ -13,13 +13,27 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-
+        flatDir {
+        	dirs 'lib'
+        }
     }
 }
 
 // Apply the java-library plugin to add support for Java Library
-apply plugin: 'java'
+plugins {
+  id 'java'
+  id 'application'
+  id 'org.openjfx.javafxplugin' version '0.0.8'
+}
 
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.base', 'javafx.controls' ]
+}
+
+application {
+	mainClassName = 'nl.jchmb.dndbattle.gui.Main'
+}
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -37,27 +51,12 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
 	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
 	
+	//implementation name: 'javafx.base'
+	//implementation name: 'javafx.controls'
+	
 	// https://mvnrepository.com/artifact/org.controlsfx/controlsfx
 	compile group: 'org.controlsfx', name: 'controlsfx', version: '9.0.0'
 	
 	// https://mvnrepository.com/artifact/de.dynamicfiles.projects.gradle.plugins/javafx-gradle-plugin
 	compile group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.5.1'
-	
-
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:23.0'
-
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
-}
-
-apply plugin: 'java'
-apply plugin: 'javafx-gradle-plugin'
-
-jfx {
-    // minimal requirement for jfxJar-task
-    mainClass = 'nl.jchmb.dndbattle.gui.Main'
-    
-    // minimal requirement for jfxNative-task
-    vendor = 'dndbattletool'
 }
